@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>โปรไฟล์ | Calorie Compass</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
+<body>
+<main class="page-shell profile-shell">
+    <nav class="top-nav">
+        <a class="brand" href="/">Calorie Compass</a>
+        <div class="account-menu"><a class="nav-link" th:href="@{/}">แผน</a><a class="nav-link" th:href="@{/diary}">Food Diary</a><a class="nav-link" th:href="@{/history}">ประวัติ</a><span>สวัสดี <b th:text="${displayName}"></b></span><form th:action="@{/logout}" method="post"><button class="logout-button" type="submit">ออกจากระบบ</button></form></div>
+    </nav>
+    <header class="page-header"><div><span class="eyebrow">PROFILE</span><h1>โปรไฟล์ของฉัน</h1><p>จัดการชื่อบัญชีและตรวจสอบแผนที่กำลังใช้งาน</p></div></header>
+
+    <div class="profile-layout">
+        <section class="card profile-card">
+            <div class="section-heading"><span>01</span><div><h2>ข้อมูลบัญชี</h2><p>อีเมลใช้สำหรับเข้าสู่ระบบและไม่สามารถเปลี่ยนจากหน้านี้</p></div></div>
+            <div class="alert success" th:if="${param.saved}">บันทึกชื่อที่แสดงแล้ว</div>
+            <form th:action="@{/profile}" th:object="${account}" method="post">
+                <label>ชื่อที่แสดง<input type="text" th:field="*{displayName}"><em th:errors="*{displayName}"></em></label>
+                <label class="full-field">อีเมล<input type="email" th:value="${email}" disabled></label>
+                <button type="submit">บันทึกข้อมูลบัญชี <span>→</span></button>
+            </form>
+        </section>
+
+        <section class="card current-plan-card">
+            <div class="section-heading"><span>02</span><div><h2>แผนปัจจุบัน</h2><p>ระบบใช้แผนล่าสุดกับ Food Diary จนกว่าคุณจะคำนวณแผนใหม่</p></div></div>
+            <div th:if="${latestPlan == null}" class="history-empty">ยังไม่มีแผน เริ่มจากกรอกข้อมูลร่างกายและคำนวณเป้าหมาย</div>
+            <div th:if="${latestPlan != null}" class="plan-details">
+                <div><small>น้ำหนัก</small><b><span th:text="${latestPlan.weightKg}"></span> กก.</b></div>
+                <div><small>เป้าหมายพลังงาน</small><b><span th:text="${latestPlan.calorieTarget}"></span> kcal</b></div>
+                <div><small>โปรตีน</small><b><span th:text="${latestPlan.proteinGrams}"></span> กรัม</b></div>
+                <div><small>วันที่เริ่มใช้</small><b th:text="${#temporals.format(latestPlan.planDate, 'dd/MM/yyyy')}"></b></div>
+            </div>
+            <a class="primary-link" th:href="@{/}">ปรับข้อมูลร่างกายและสร้างแผนใหม่ →</a>
+        </section>
+    </div>
+</main>
+</body>
+</html>

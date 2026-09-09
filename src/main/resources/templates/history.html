@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ประวัติ | Calorie Compass</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
+<body>
+<main class="page-shell">
+    <nav class="top-nav">
+        <a class="brand" href="/">Calorie Compass</a>
+        <div class="account-menu"><a class="nav-link" th:href="@{/}">แผน</a><a class="nav-link" th:href="@{/diary}">Food Diary</a><a class="nav-link" th:href="@{/profile}">โปรไฟล์</a><span>สวัสดี <b th:text="${displayName}"></b></span><form th:action="@{/logout}" method="post"><button class="logout-button" type="submit">ออกจากระบบ</button></form></div>
+    </nav>
+
+    <header class="page-header">
+        <div><span class="eyebrow">PROGRESS</span><h1>ประวัติและแนวโน้ม</h1><p>เปรียบเทียบสิ่งที่กินจริงกับเป้าหมายในแต่ละวัน</p></div>
+        <div class="period-switch"><a th:classappend="${selectedDays == 7} ? ' active'" th:href="@{/history(days=7)}">7 วัน</a><a th:classappend="${selectedDays == 30} ? ' active'" th:href="@{/history(days=30)}">30 วัน</a></div>
+    </header>
+
+    <section class="progress-overview">
+        <article class="card"><small>แคลอรี่เฉลี่ย</small><strong th:text="${report.averageCalories}">0</strong><span>kcal/วัน</span></article>
+        <article class="card"><small>โปรตีนเฉลี่ย</small><strong th:text="${report.averageProtein}">0</strong><span>กรัม/วัน</span></article>
+        <article class="card"><small>น้ำหนักล่าสุด</small><strong th:text="${report.endWeightKg == null ? '—' : report.endWeightKg}">—</strong><span>กก.</span></article>
+        <article class="card"><small>การเปลี่ยนแปลง</small><strong th:text="${report.weightChangeKg() == null ? '—' : (report.weightChangeKg() > 0 ? '+' : '') + report.weightChangeKg()}">—</strong><span>กก.</span></article>
+    </section>
+
+    <section class="card progress-card">
+        <div class="section-heading"><span>↗</span><div><h2>แคลอรี่และโปรตีนรายวัน</h2><p>แถบสีแสดงสัดส่วนที่กินเทียบกับเป้าหมายของวันนั้น</p></div></div>
+        <div class="progress-legend"><span class="calorie-dot"></span> แคลอรี่ <span class="protein-dot"></span> โปรตีน</div>
+        <div class="daily-progress" th:each="day : ${report.days}">
+            <div class="progress-date"><b th:text="${#temporals.format(day.date, 'dd/MM')}"></b><small th:text="${day.weightKg == null ? 'ยังไม่มีแผน' : day.weightKg + ' กก.'}"></small></div>
+            <div class="progress-bars">
+                <div class="bar-row"><span>พลังงาน</span><div class="bar-track"><i class="bar-fill calories" th:classappend="${day.overCalories} ? ' over'" th:style="|width:${day.caloriePercent}%|"></i></div><b><span th:text="${day.consumedCalories}"></span>/<span th:text="${day.calorieTarget}"></span></b></div>
+                <div class="bar-row"><span>โปรตีน</span><div class="bar-track"><i class="bar-fill protein-bar" th:style="|width:${day.proteinPercent}%|"></i></div><b><span th:text="${day.consumedProtein}"></span>/<span th:text="${day.proteinTarget}"></span> g</b></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card weight-chart-card" th:if="${report.endWeightKg != null}">
+        <div class="section-heading"><span>⚖</span><div><h2>แนวโน้มน้ำหนัก</h2><p>อ้างอิงน้ำหนักจากแผนที่มีผลในแต่ละวัน</p></div></div>
+        <div class="weight-chart-scroll">
+            <div class="weight-chart" th:style="|--chart-days:${selectedDays}|"><div class="weight-column" th:each="day : ${report.days}"><b th:text="${day.weightKg == null ? '' : day.weightKg}"></b><div class="weight-track"><i th:if="${day.weightKg != null}" th:style="|height:${report.weightPercent(day.weightKg)}%|"></i></div><small th:text="${#temporals.format(day.date, 'dd/MM')}"></small></div></div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

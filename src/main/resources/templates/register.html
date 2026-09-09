@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>สมัครสมาชิก | Calorie Compass</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
+<body class="auth-page">
+<main class="auth-shell">
+    <section class="auth-intro"><span class="eyebrow">เริ่มต้นวันนี้</span><h1>สร้างพื้นที่<br>สำหรับเป้าหมายของคุณ</h1><p>ข้อมูลแผนและประวัติทั้งหมดจะแยกตามบัญชีผู้ใช้</p></section>
+    <section class="card auth-card">
+        <h2>สร้างบัญชี</h2><p>ใช้เวลาไม่ถึงหนึ่งนาที</p>
+        <form th:action="@{/register}" th:object="${registration}" method="post">
+            <label>ชื่อที่แสดง<input type="text" th:field="*{displayName}" autocomplete="name"><em th:errors="*{displayName}"></em></label>
+            <label class="full-field">อีเมล<input type="email" th:field="*{email}" autocomplete="email"><em th:errors="*{email}"></em></label>
+            <label class="full-field">รหัสผ่าน<input type="password" th:field="*{password}" autocomplete="new-password"><small class="field-help">ใช้ตัวอักษรอังกฤษ ตัวเลข หรือสัญลักษณ์ และห้ามมีอักษรไทย</small><em th:errors="*{password}"></em></label>
+            <label class="full-field">ยืนยันรหัสผ่าน<input type="password" th:field="*{confirmPassword}" autocomplete="new-password"><em th:errors="*{confirmPassword}"></em></label>
+            <button type="submit">สมัครสมาชิก <span>→</span></button>
+        </form>
+        <p class="auth-link">มีบัญชีแล้ว? <a th:href="@{/login}">เข้าสู่ระบบ</a></p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>เข้าสู่ระบบ | Calorie Compass</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
+<body class="auth-page">
+<main class="auth-shell">
+    <section class="auth-intro"><span class="eyebrow">CALORIE COMPASS</span><h1>แผนของคุณ<br>เดินทางไปกับคุณ</h1><p>เข้าสู่ระบบเพื่อบันทึกเป้าหมายและติดตามความเปลี่ยนแปลงในแต่ละวัน</p></section>
+    <section class="card auth-card">
+        <h2>เข้าสู่ระบบ</h2><p>ยินดีต้อนรับกลับมา</p>
+        <div class="alert success" th:if="${param.registered}">สมัครสมาชิกสำเร็จ เข้าสู่ระบบได้เลย</div>
+        <div class="alert error" th:if="${param.error}">อีเมลหรือรหัสผ่านไม่ถูกต้อง</div>
+        <div class="alert" th:if="${param.logout}">ออกจากระบบเรียบร้อยแล้ว</div>
+        <form th:action="@{/login}" method="post">
+            <label>อีเมล<input type="email" name="email" autocomplete="email" required></label>
+            <label class="full-field">รหัสผ่าน<input type="password" name="password" autocomplete="current-password" required></label>
+            <button type="submit">เข้าสู่ระบบ <span>→</span></button>
+        </form>
+        <p class="auth-link">ยังไม่มีบัญชี? <a th:href="@{/register}">สมัครสมาชิก</a></p>
+    </section>
+</main>
+</body>
+</html>
