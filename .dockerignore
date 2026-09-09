@@ -1,0 +1,13 @@
+.git
+.github
+.gradle
+.gradle-verification
+.idea
+.vscode
+build
+data
+.env
+.env.*
+*.iml
+*.log
+*.mv.db
