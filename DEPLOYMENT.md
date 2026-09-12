@@ -8,7 +8,7 @@ Create a Supabase project, open **Connect**, and copy the PostgreSQL connection 
 
 ## 2. Create the Render web service
 
-Connect this GitHub repository to Render and create a **Web Service**. Choose **Docker** as the runtime. Render will build the included `Dockerfile` automatically.
+Connect this GitHub repository to Render and create a **Blueprint**. Render reads `render.yaml`, creates a free Docker web service in Singapore, and deploys the included `Dockerfile` automatically.
 
 Set these environment variables in the Render dashboard:
 
@@ -18,6 +18,8 @@ Set these environment variables in the Render dashboard:
 - `DB_PASSWORD=your_database_password`
 
 Use the host, port, database name, username, and password shown by Supabase. The application reads Render's `PORT` automatically, so no port variable needs to be added manually.
+
+Render asks for the three `sync: false` database values during the initial Blueprint creation. Keep these values only in the Render dashboard.
 
 Deploy the service. Spring Boot will load `application-prod.properties` and use PostgreSQL.
 
