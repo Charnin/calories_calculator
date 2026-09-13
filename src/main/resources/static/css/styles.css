@@ -216,3 +216,49 @@ body { background:radial-gradient(circle at 8% 3%,#ffe0c2 0,transparent 30%),lin
 .secondary-button:hover { border-color:var(--green); }
 .search-empty { display:none; color:var(--muted); }
 @media (max-width:800px) { .top-nav{align-items:flex-start;gap:18px}.account-menu{flex-wrap:wrap;justify-content:flex-end}.copy-meal-form{grid-template-columns:1fr 1fr}.copy-meal-form button{grid-column:1/-1;width:100%} }
+
+/* Login and plan journey refresh */
+.home-hero { display:grid; max-width:none; grid-template-columns:minmax(0,1.25fr) minmax(310px,.75fr); gap:54px; align-items:end; }
+.hero-copy p { max-width:700px; margin-bottom:0; font-size:17px; }
+.journey-steps { display:grid; gap:0; margin:0; padding:0; list-style:none; }
+.journey-steps li { position:relative; display:flex; gap:13px; min-height:67px; padding-bottom:15px; }
+.journey-steps li:not(:last-child)::after { position:absolute; top:31px; bottom:0; left:15px; width:1px; background:var(--line); content:""; }
+.journey-steps li>span { z-index:1; display:grid; width:31px; height:31px; flex:0 0 auto; place-items:center; border:1px solid #f1c9aa; border-radius:50%; background:#fff8f2; color:var(--green); font-size:12px; font-weight:700; }
+.journey-steps b,.journey-steps small { display:block; }
+.journey-steps b { line-height:1.35; }
+.journey-steps small { margin-top:3px; color:var(--muted); font-size:12px; }
+.calculate-button { margin-top:30px; padding:17px 20px; background:linear-gradient(135deg,var(--ink),#68402b); box-shadow:0 12px 25px rgba(64,39,27,.16); }
+.auth-shell { width:min(1080px,calc(100% - 32px)); grid-template-columns:minmax(0,1.15fr) minmax(350px,.72fr); gap:76px; }
+.auth-topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:52px; }
+.auth-topbar .brand { font-size:18px; }
+.auth-benefits { display:grid; gap:16px; max-width:520px; margin:34px 0 0; padding:0; list-style:none; }
+.auth-benefits li { display:flex; gap:15px; align-items:flex-start; }
+.auth-benefits li>span { padding-top:3px; color:var(--green); font-size:11px; font-weight:700; letter-spacing:.08em; }
+.auth-benefits b,.auth-benefits small { display:block; }
+.auth-benefits b { font-size:15px; }
+.auth-benefits small { margin-top:2px; color:var(--muted); font-size:13px; }
+.auth-card { padding:40px; }
+.auth-card-kicker { display:block; margin-bottom:9px; color:var(--green); font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+
+@media (max-width:800px) {
+    .home-hero { grid-template-columns:1fr; gap:28px; }
+    .journey-steps { grid-template-columns:repeat(3,1fr); gap:10px; }
+    .journey-steps li { display:block; min-height:0; padding:14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.65); }
+    .journey-steps li::after { display:none; }
+    .journey-steps li>span { margin-bottom:9px; }
+    .auth-shell { grid-template-columns:1fr; gap:30px; padding-top:28px; }
+    .auth-topbar { margin-bottom:34px; }
+    .auth-benefits { grid-template-columns:repeat(3,1fr); max-width:none; }
+    .auth-benefits li { display:block; }
+    .auth-benefits li>span { display:block; margin-bottom:5px; }
+}
+@media (max-width:540px) {
+    .journey-steps,.auth-benefits { grid-template-columns:1fr; }
+    .journey-steps { gap:8px; }
+    .journey-steps li { display:flex; padding:12px; }
+    .journey-steps li>span { margin-bottom:0; }
+    .auth-benefits { gap:12px; }
+    .auth-benefits li { display:flex; }
+    .auth-topbar { margin-bottom:28px; }
+    .auth-card { padding:25px; }
+}

@@ -4,11 +4,18 @@
 <body class="auth-page">
 <main class="auth-shell">
     <section class="auth-intro">
-        <div class="language-switch"><a href="?lang=th" th:classappend="${#locale.language == 'th'} ? ' active'">TH</a><span>/</span><a href="?lang=en" th:classappend="${#locale.language == 'en'} ? ' active'">EN</a></div>
-        <span class="eyebrow">CALORIE COMPASS</span><h1 th:text="#{login.hero}">แผนของคุณ เดินทางไปกับคุณ</h1><p th:text="#{login.intro}"></p>
+        <div class="auth-topbar"><span class="brand"><span class="brand-mark">C</span> Calorie Compass</span><div class="language-switch"><a href="?lang=th" th:classappend="${#locale.language == 'th'} ? ' active'">TH</a><span>/</span><a href="?lang=en" th:classappend="${#locale.language == 'en'} ? ' active'">EN</a></div></div>
+        <span class="eyebrow" th:text="#{login.eyebrow}">วางแผน • บันทึก • ปรับให้เหมาะกับคุณ</span>
+        <h1 th:text="#{login.hero}">เป้าหมายสุขภาพที่ทำต่อได้ในทุกวัน</h1>
+        <p th:text="#{login.intro}">คำนวณเป้าหมาย บันทึกมื้ออาหาร และดูความคืบหน้าทั้งหมดในที่เดียว</p>
+        <ul class="auth-benefits">
+            <li><span>01</span><div><b th:text="#{login.benefitPlan}">เริ่มจากแผนที่พอดีกับคุณ</b><small th:text="#{login.benefitPlanHelp}">คำนวณแคลอรี่และสารอาหารจากข้อมูลร่างกาย</small></div></li>
+            <li><span>02</span><div><b th:text="#{login.benefitTrack}">เห็นภาพจากสิ่งที่กินจริง</b><small th:text="#{login.benefitTrackHelp}">บันทึกอาหารและเทียบกับเป้าหมายรายวัน</small></div></li>
+            <li><span>03</span><div><b th:text="#{login.benefitAdjust}">ปรับแผนจากความคืบหน้า</b><small th:text="#{login.benefitAdjustHelp}">ติดตามแนวโน้มเพื่อวางแผนระยะยาว</small></div></li>
+        </ul>
     </section>
     <section class="card auth-card">
-        <h2 th:text="#{login.heading}">เข้าสู่ระบบ</h2><p th:text="#{login.welcome}"></p>
+        <span class="auth-card-kicker" th:text="#{login.cardKicker}">บัญชีของฉัน</span><h2 th:text="#{login.heading}">เข้าสู่ระบบ</h2><p th:text="#{login.welcome}"></p>
         <div class="alert success" th:if="${param.registered}" th:text="#{login.registered}"></div>
         <div class="alert error" th:if="${param.error}" th:text="#{login.error}"></div>
         <div class="alert" th:if="${param.logout}" th:text="#{login.logout}"></div>

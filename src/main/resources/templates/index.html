@@ -4,7 +4,14 @@
 <body>
 <main class="page-shell">
     <nav th:replace="~{fragments :: nav('plan')}"></nav>
-    <header class="hero"><span class="eyebrow" th:text="#{home.eyebrow}"></span><h1 th:text="#{home.heading}"></h1><p th:text="#{home.intro}"></p></header>
+    <header class="hero home-hero">
+        <div class="hero-copy"><span class="eyebrow" th:text="#{home.eyebrow}"></span><h1 th:text="#{home.heading}"></h1><p th:text="#{home.intro}"></p></div>
+        <ol class="journey-steps">
+            <li><span>1</span><div><b th:text="#{home.stepBody}"></b><small th:text="#{home.stepBodyHelp}"></small></div></li>
+            <li><span>2</span><div><b th:text="#{home.stepGoal}"></b><small th:text="#{home.stepGoalHelp}"></small></div></li>
+            <li><span>3</span><div><b th:text="#{home.stepResult}"></b><small th:text="#{home.stepResultHelp}"></small></div></li>
+        </ol>
+    </header>
     <section class="layout">
         <form class="card form-card" th:action="@{/calculate}" th:object="${profile}" method="post">
             <div class="section-heading"><span>01</span><div><h2 th:text="#{home.body}"></h2><p th:text="#{home.bodyHelp}"></p></div></div>
@@ -26,7 +33,7 @@
             <div class="section-heading spaced"><span>02</span><div><h2 th:text="#{home.activityGoal}"></h2><p th:text="#{home.activityHelp}"></p></div></div>
             <label class="full-field"><span th:text="#{home.activity}"></span><select th:field="*{activityLevel}"><option value="1.2" th:text="#{home.activity1}"></option><option value="1.375" th:text="#{home.activity2}"></option><option value="1.55" th:text="#{home.activity3}"></option><option value="1.725" th:text="#{home.activity4}"></option><option value="1.9" th:text="#{home.activity5}"></option></select></label>
             <div class="goal-options"><label><input type="radio" th:field="*{goal}" value="lose"><span><b th:text="#{home.lose}"></b><small th:text="#{home.loseHelp}"></small></span></label><label><input type="radio" th:field="*{goal}" value="maintain"><span><b th:text="#{home.maintain}"></b><small th:text="#{home.maintainHelp}"></small></span></label><label><input type="radio" th:field="*{goal}" value="gain"><span><b th:text="#{home.gain}"></b><small th:text="#{home.gainHelp}"></small></span></label></div>
-            <button type="submit"><span class="button-label" th:text="#{home.calculate}"></span><span>→</span></button>
+            <button class="calculate-button" type="submit"><span class="button-label" th:text="#{home.calculate}"></span><span>→</span></button>
         </form>
         <aside class="card result-card">
             <div th:if="${result == null}" class="empty-state"><div class="dial"><span>0</span><small>kcal</small></div><h2 th:text="#{home.resultHere}"></h2><p th:text="#{home.resultHelp}"></p></div>
