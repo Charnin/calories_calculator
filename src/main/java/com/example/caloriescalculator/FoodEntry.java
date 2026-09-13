@@ -58,6 +58,25 @@ public class FoodEntry {
         this.fatGrams = form.getFatGrams();
     }
 
+    public FoodEntry copyFor(AppUser owner, LocalDate date) {
+        FoodEntry copy = new FoodEntry();
+        copy.user = owner;
+        copy.logDate = date;
+        copy.mealType = mealType;
+        copy.foodName = foodName;
+        copy.servingQuantity = servingQuantity;
+        copy.servingUnit = servingUnit;
+        copy.servingDescription = servingDescription;
+        copy.dataSource = dataSource;
+        copy.externalFoodId = externalFoodId;
+        copy.calories = calories;
+        copy.proteinGrams = proteinGrams;
+        copy.carbohydrateGrams = carbohydrateGrams;
+        copy.fatGrams = fatGrams;
+        copy.createdAt = Instant.now();
+        return copy;
+    }
+
     public Long getId() { return id; }
     public LocalDate getLogDate() { return logDate; }
     public String getMealType() { return mealType; }

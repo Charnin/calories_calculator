@@ -40,11 +40,19 @@ public class ProgressService {
                     percent(protein, proteinTarget), calorieTarget > 0 && calories > calorieTarget));
         }
 
-        long averageCalories = Math.round(days.stream().mapToLong(DailyProgress::consumedCalories).average().orElse(0));
-        long averageProtein = Math.round(days.stream().mapToLong(DailyProgress::consumedProtein).average().orElse(0));
+        List<DailyProgress> logged = days.stream()
+                .filter(day -> !entriesByDate.getOrDefault(day.date(), List.of()).isEmpty())
+                .toList();
+        long averageCalories = Math.round(logged.stream().mapToLong(DailyProgress::consumedCalories).average().orElse(0));
+        long averageProtein = Math.round(logged.stream().mapToLong(DailyProgress::consumedProtein).average().orElse(0));
+        long calorieTargetDays = logged.stream().filter(day -> day.calorieTarget() > 0
+                && Math.abs(day.consumedCalories() - day.calorieTarget()) <= day.calorieTarget() * 0.10).count();
+        long proteinTargetDays = logged.stream().filter(day -> day.proteinTarget() > 0
+                && day.consumedProtein() >= day.proteinTarget() * 0.90).count();
         Double startWeight = days.stream().map(DailyProgress::weightKg).filter(java.util.Objects::nonNull).findFirst().orElse(null);
         Double endWeight = days.reversed().stream().map(DailyProgress::weightKg).filter(java.util.Objects::nonNull).findFirst().orElse(null);
-        return new ProgressReport(List.copyOf(days), averageCalories, averageProtein, startWeight, endWeight);
+        return new ProgressReport(List.copyOf(days), averageCalories, averageProtein, logged.size(),
+                calorieTargetDays, proteinTargetDays, startWeight, endWeight);
     }
 
     private int percent(long value, long target) {

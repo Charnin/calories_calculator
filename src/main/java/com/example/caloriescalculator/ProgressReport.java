@@ -6,6 +6,9 @@ public record ProgressReport(
         List<DailyProgress> days,
         long averageCalories,
         long averageProtein,
+        long loggedDays,
+        long calorieTargetDays,
+        long proteinTargetDays,
         Double startWeightKg,
         Double endWeightKg) {
     public Double weightChangeKg() {

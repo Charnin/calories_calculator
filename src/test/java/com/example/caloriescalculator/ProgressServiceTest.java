@@ -32,6 +32,11 @@ class ProgressServiceTest {
         assertThat(today.caloriePercent()).isEqualTo(50);
         assertThat(today.proteinPercent()).isEqualTo(50);
         assertThat(report.endWeightKg()).isEqualTo(70.0);
+        assertThat(report.loggedDays()).isEqualTo(1);
+        assertThat(report.averageCalories()).isEqualTo(900);
+        assertThat(report.averageProtein()).isEqualTo(60);
+        assertThat(report.calorieTargetDays()).isZero();
+        assertThat(report.proteinTargetDays()).isZero();
     }
 
     private FoodEntryForm food(double calories, double protein) {

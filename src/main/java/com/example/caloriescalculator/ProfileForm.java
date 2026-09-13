@@ -4,8 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class ProfileForm {
-    @NotBlank(message = "กรุณากรอกชื่อที่แสดง")
-    @Size(max = 80, message = "ชื่อต้องไม่เกิน 80 ตัวอักษร")
+    @NotBlank(message = "{validation.name.required}")
+    @Size(max = 80, message = "{validation.name.size}")
     private String displayName;
 
     public String getDisplayName() { return displayName; }

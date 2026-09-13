@@ -1,6 +1,7 @@
 package com.example.caloriescalculator;
 
 import jakarta.validation.Valid;
+import java.util.Objects;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,7 +31,7 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("registration") RegistrationForm registration,
                            BindingResult bindingResult) {
-        if (!registration.getPassword().equals(registration.getConfirmPassword())) {
+        if (!Objects.equals(registration.getPassword(), registration.getConfirmPassword())) {
             bindingResult.rejectValue("confirmPassword", "password.mismatch", "รหัสผ่านทั้งสองช่องไม่ตรงกัน");
         }
         if (bindingResult.hasErrors()) {

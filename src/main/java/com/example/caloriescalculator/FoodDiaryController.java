@@ -61,6 +61,19 @@ public class FoodDiaryController {
         return "diary";
     }
 
+    @GetMapping("/diary/{id}/repeat")
+    public String repeatFood(@PathVariable Long id,
+                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                             Model model, Principal principal) {
+        AppUser user = accountService.requireByEmail(principal.getName());
+        FoodEntryForm form = FoodEntryForm.from(diaryService.requireEntry(user, id));
+        form.setLogDate(date);
+        model.addAttribute("foodEntry", form);
+        model.addAttribute("repeatingEntry", true);
+        addDiaryModel(model, principal, date);
+        return "diary";
+    }
+
     @PostMapping("/diary/{id}")
     public String updateFood(@PathVariable Long id,
                              @Valid @ModelAttribute("foodEntry") FoodEntryForm foodEntry,
@@ -83,6 +96,15 @@ public class FoodDiaryController {
         AppUser user = accountService.requireByEmail(principal.getName());
         diaryService.delete(user, id);
         return "redirect:/diary?date=" + date + "&deleted";
+    }
+
+    @PostMapping("/diary/copy-meal")
+    public String copyMeal(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate sourceDate,
+                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate targetDate,
+                           @RequestParam String mealType, Principal principal) {
+        AppUser user = accountService.requireByEmail(principal.getName());
+        int copied = diaryService.copyMeal(user, sourceDate, targetDate, mealType);
+        return "redirect:/diary?date=" + targetDate + (copied == 0 ? "&nothingToCopy" : "&copied=" + copied);
     }
 
     private void addDiaryModel(Model model, Principal principal, LocalDate date) {

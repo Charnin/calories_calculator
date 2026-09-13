@@ -6,20 +6,20 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class RegistrationForm {
-    @NotBlank(message = "กรุณากรอกชื่อที่ต้องการให้แสดง")
-    @Size(max = 80, message = "ชื่อต้องไม่เกิน 80 ตัวอักษร")
+    @NotBlank(message = "{validation.name.required}")
+    @Size(max = 80, message = "{validation.name.size}")
     private String displayName;
 
-    @NotBlank(message = "กรุณากรอกอีเมล")
-    @Email(message = "รูปแบบอีเมลไม่ถูกต้อง")
+    @NotBlank(message = "{validation.email.required}")
+    @Email(message = "{validation.email.invalid}")
     private String email;
 
-    @NotBlank(message = "กรุณากรอกรหัสผ่าน")
-    @Size(min = 8, max = 72, message = "รหัสผ่านต้องมี 8–72 ตัวอักษร")
-    @Pattern(regexp = "^[\\x21-\\x7E]+$", message = "รหัสผ่านใช้ได้เฉพาะอักษรอังกฤษ ตัวเลข และสัญลักษณ์")
+    @NotBlank(message = "{validation.password.required}")
+    @Size(min = 8, max = 72, message = "{validation.password.size}")
+    @Pattern(regexp = "^[\\x21-\\x7E]+$", message = "{validation.password.pattern}")
     private String password;
 
-    @NotBlank(message = "กรุณายืนยันรหัสผ่าน")
+    @NotBlank(message = "{validation.password.confirm}")
     private String confirmPassword;
 
     public String getDisplayName() { return displayName; }

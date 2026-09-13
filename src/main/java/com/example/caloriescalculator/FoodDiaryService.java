@@ -40,6 +40,16 @@ public class FoodDiaryService {
         foodEntryRepository.findByIdAndUser(entryId, user).ifPresent(foodEntryRepository::delete);
     }
 
+    @Transactional
+    public int copyMeal(AppUser user, LocalDate sourceDate, LocalDate targetDate, String mealType) {
+        List<FoodEntry> sourceEntries = foodEntryRepository
+                .findByUserAndLogDateAndMealTypeOrderByCreatedAtAsc(user, sourceDate, mealType);
+        foodEntryRepository.saveAll(sourceEntries.stream()
+                .map(entry -> entry.copyFor(user, targetDate))
+                .toList());
+        return sourceEntries.size();
+    }
+
     public DiarySummary summarize(AppUser user, LocalDate date, List<FoodEntry> entries) {
         long consumedCalories = Math.round(entries.stream().mapToDouble(FoodEntry::getCalories).sum());
         long consumedProtein = Math.round(entries.stream().mapToDouble(FoodEntry::getProteinGrams).sum());

@@ -61,6 +61,16 @@ class CustomFoodServiceTest {
         assertThat(updated.getBaseUnitLabel()).isEqualTo("มิลลิลิตร");
     }
 
+    @Test
+    void listsMoreThanTwentySavedFoods() {
+        AppUser owner = userRepository.save(new AppUser("Many Foods", "many-foods@example.com", "hash"));
+        for (int index = 1; index <= 25; index++) {
+            customFoodService.add(owner, food("อาหาร " + index, 100, 5, 10, 2));
+        }
+
+        assertThat(customFoodService.list(owner)).hasSize(25);
+    }
+
     private CustomFoodForm food(String name, double calories, double protein, double carbs, double fat) {
         CustomFoodForm form = new CustomFoodForm();
         form.setName(name);

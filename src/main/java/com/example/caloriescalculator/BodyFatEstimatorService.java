@@ -10,9 +10,9 @@ public class BodyFatEstimatorService {
         String mode = profile.getBodyFatMode();
         if ("direct".equals(mode)) {
             if (profile.getBodyFatPercent() == null) {
-                bindingResult.rejectValue("bodyFatPercent", "required", "กรุณากรอกเปอร์เซ็นต์ไขมัน");
+                bindingResult.rejectValue("bodyFatPercent", "bodyFat.required", "กรุณากรอกเปอร์เซ็นต์ไขมัน");
             } else if (profile.getBodyFatPercent() < 3 || profile.getBodyFatPercent() > 70) {
-                bindingResult.rejectValue("bodyFatPercent", "range", "เปอร์เซ็นต์ไขมันต้องอยู่ระหว่าง 3–70%");
+                bindingResult.rejectValue("bodyFatPercent", "bodyFat.range", "เปอร์เซ็นต์ไขมันต้องอยู่ระหว่าง 3–70%");
             }
             return false;
         }
@@ -22,18 +22,18 @@ public class BodyFatEstimatorService {
         }
 
         if (profile.getNeckCm() == null) {
-            bindingResult.rejectValue("neckCm", "required", "กรุณากรอกรอบคอ");
+            bindingResult.rejectValue("neckCm", "neck.required", "กรุณากรอกรอบคอ");
         }
         if (profile.getWaistCm() == null) {
-            bindingResult.rejectValue("waistCm", "required", "กรุณากรอกรอบเอว");
+            bindingResult.rejectValue("waistCm", "waist.required", "กรุณากรอกรอบเอว");
         }
         if ("female".equals(profile.getSex()) && profile.getHipCm() == null) {
-            bindingResult.rejectValue("hipCm", "required", "กรุณากรอกรอบสะโพก");
+            bindingResult.rejectValue("hipCm", "hip.required", "กรุณากรอกรอบสะโพก");
         }
-        validateRange(bindingResult, "neckCm", profile.getNeckCm(), 20, 80, "กรุณาตรวจสอบรอบคออีกครั้ง");
-        validateRange(bindingResult, "waistCm", profile.getWaistCm(), 40, 250, "กรุณาตรวจสอบรอบเอวอีกครั้ง");
+        validateRange(bindingResult, "neckCm", "neck.range", profile.getNeckCm(), 20, 80, "กรุณาตรวจสอบรอบคออีกครั้ง");
+        validateRange(bindingResult, "waistCm", "waist.range", profile.getWaistCm(), 40, 250, "กรุณาตรวจสอบรอบเอวอีกครั้ง");
         if ("female".equals(profile.getSex())) {
-            validateRange(bindingResult, "hipCm", profile.getHipCm(), 50, 250, "กรุณาตรวจสอบรอบสะโพกอีกครั้ง");
+            validateRange(bindingResult, "hipCm", "hip.range", profile.getHipCm(), 50, 250, "กรุณาตรวจสอบรอบสะโพกอีกครั้ง");
         }
         if (bindingResult.hasErrors()) {
             return false;
@@ -45,7 +45,7 @@ public class BodyFatEstimatorService {
         double estimated;
         if ("male".equals(profile.getSex())) {
             if (waistInches <= neckInches) {
-                bindingResult.rejectValue("waistCm", "invalid", "รอบเอวต้องมากกว่ารอบคอ");
+                bindingResult.rejectValue("waistCm", "waist.greaterThanNeck", "รอบเอวต้องมากกว่ารอบคอ");
                 return false;
             }
             estimated = 86.010 * Math.log10(waistInches - neckInches)
@@ -53,7 +53,7 @@ public class BodyFatEstimatorService {
         } else {
             double hipInches = profile.getHipCm() / 2.54;
             if (waistInches + hipInches <= neckInches) {
-                bindingResult.rejectValue("waistCm", "invalid", "กรุณาตรวจสอบค่ารอบตัวอีกครั้ง");
+                bindingResult.rejectValue("waistCm", "measurements.invalid", "กรุณาตรวจสอบค่ารอบตัวอีกครั้ง");
                 return false;
             }
             estimated = 163.205 * Math.log10(waistInches + hipInches - neckInches)
@@ -68,10 +68,10 @@ public class BodyFatEstimatorService {
         return true;
     }
 
-    private void validateRange(BindingResult errors, String field, Double value,
+    private void validateRange(BindingResult errors, String field, String code, Double value,
                                double minimum, double maximum, String message) {
         if (value != null && (value < minimum || value > maximum)) {
-            errors.rejectValue(field, "range", message);
+            errors.rejectValue(field, code, message);
         }
     }
 }

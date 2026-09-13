@@ -10,22 +10,22 @@ import jakarta.validation.constraints.NotNull;
 public class UserProfileForm {
     private String bodyFatMode = "skip";
 
-    @NotNull(message = "กรุณากรอกอายุ")
-    @Min(value = 15, message = "ระบบนี้รองรับอายุตั้งแต่ 15 ปี")
-    @Max(value = 100, message = "กรุณาตรวจสอบอายุอีกครั้ง")
+    @NotNull(message = "{validation.age.required}")
+    @Min(value = 15, message = "{validation.age.min}")
+    @Max(value = 100, message = "{validation.age.max}")
     private Integer age;
 
-    @NotBlank(message = "กรุณาเลือกเพศที่ใช้คำนวณ")
+    @NotBlank(message = "{validation.sex.required}")
     private String sex;
 
-    @NotNull(message = "กรุณากรอกน้ำหนัก")
-    @DecimalMin(value = "30.0", message = "น้ำหนักต้องไม่น้อยกว่า 30 กก.")
-    @DecimalMax(value = "350.0", message = "กรุณาตรวจสอบน้ำหนักอีกครั้ง")
+    @NotNull(message = "{validation.weight.required}")
+    @DecimalMin(value = "30.0", message = "{validation.weight.min}")
+    @DecimalMax(value = "350.0", message = "{validation.weight.max}")
     private Double weightKg;
 
-    @NotNull(message = "กรุณากรอกส่วนสูง")
-    @DecimalMin(value = "120.0", message = "ส่วนสูงต้องไม่น้อยกว่า 120 ซม.")
-    @DecimalMax(value = "250.0", message = "กรุณาตรวจสอบส่วนสูงอีกครั้ง")
+    @NotNull(message = "{validation.height.required}")
+    @DecimalMin(value = "120.0", message = "{validation.height.min}")
+    @DecimalMax(value = "250.0", message = "{validation.height.max}")
     private Double heightCm;
 
     private Double bodyFatPercent;
@@ -36,10 +36,10 @@ public class UserProfileForm {
 
     private Double hipCm;
 
-    @NotNull(message = "กรุณาเลือกระดับกิจกรรม")
+    @NotNull(message = "{validation.activity.required}")
     private Double activityLevel = 1.2;
 
-    @NotBlank(message = "กรุณาเลือกเป้าหมาย")
+    @NotBlank(message = "{validation.goal.required}")
     private String goal = "maintain";
 
     public Integer getAge() { return age; }

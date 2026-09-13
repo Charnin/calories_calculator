@@ -30,7 +30,7 @@ public class CustomFoodService {
     }
 
     public List<CustomFood> list(AppUser user) {
-        return repository.findTop20ByUserOrderByNameAsc(user);
+        return repository.findByUserOrderByNameAsc(user);
     }
 
 }

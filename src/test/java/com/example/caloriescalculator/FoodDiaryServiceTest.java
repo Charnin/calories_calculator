@@ -33,6 +33,34 @@ class FoodDiaryServiceTest {
         assertThat(updated.getCalories()).isEqualTo(195);
     }
 
+    @Test
+    void copiesOnlyTheSelectedMealOwnedByTheUser() {
+        AppUser owner = userRepository.save(new AppUser("Copy Owner", "copy-owner@example.com", "hash"));
+        AppUser other = userRepository.save(new AppUser("Copy Other", "copy-other@example.com", "hash"));
+        LocalDate sourceDate = LocalDate.now().minusDays(1);
+        LocalDate targetDate = LocalDate.now();
+        FoodEntryForm breakfast = food("ไข่", 100, 150);
+        breakfast.setLogDate(sourceDate);
+        breakfast.setMealType("breakfast");
+        FoodEntryForm lunch = food("ข้าว", 100, 200);
+        lunch.setLogDate(sourceDate);
+        lunch.setMealType("lunch");
+        FoodEntryForm otherBreakfast = food("อาหารของคนอื่น", 100, 300);
+        otherBreakfast.setLogDate(sourceDate);
+        otherBreakfast.setMealType("breakfast");
+        diaryService.add(owner, breakfast);
+        diaryService.add(owner, lunch);
+        diaryService.add(other, otherBreakfast);
+
+        int copied = diaryService.copyMeal(owner, sourceDate, targetDate, "breakfast");
+
+        assertThat(copied).isEqualTo(1);
+        assertThat(diaryService.entriesFor(owner, targetDate))
+                .singleElement()
+                .satisfies(entry -> assertThat(entry.getFoodName()).isEqualTo("ไข่"));
+        assertThat(diaryService.entriesFor(other, targetDate)).isEmpty();
+    }
+
     private FoodEntryForm food(String name, double quantity, double calories) {
         FoodEntryForm form = new FoodEntryForm();
         form.setFoodName(name);

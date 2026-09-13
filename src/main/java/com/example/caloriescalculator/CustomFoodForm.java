@@ -7,31 +7,31 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class CustomFoodForm {
-    @NotBlank(message = "กรุณากรอกชื่ออาหาร")
-    @Size(max = 160, message = "ชื่ออาหารต้องไม่เกิน 160 ตัวอักษร")
+    @NotBlank(message = "{validation.food.required}")
+    @Size(max = 160, message = "{validation.food.size}")
     private String name;
 
-    @Size(max = 120, message = "ยี่ห้อต้องไม่เกิน 120 ตัวอักษร")
+    @Size(max = 120, message = "{validation.brand.size}")
     private String brand = "";
 
-    @NotBlank(message = "กรุณาเลือกหน่วยอ้างอิง")
-    @Pattern(regexp = "^(g|ml)$", message = "หน่วยอ้างอิงต้องเป็นกรัมหรือมิลลิลิตร")
+    @NotBlank(message = "{validation.referenceUnit.required}")
+    @Pattern(regexp = "^(g|ml)$", message = "{validation.referenceUnit.invalid}")
     private String baseUnit = "g";
 
-    @NotNull(message = "กรุณากรอกแคลอรี่")
-    @DecimalMin(value = "0", message = "แคลอรี่ต้องไม่ติดลบ")
+    @NotNull(message = "{validation.calories.required}")
+    @DecimalMin(value = "0", message = "{validation.calories.nonnegative}")
     private Double caloriesPer100;
 
-    @NotNull(message = "กรุณากรอกโปรตีน")
-    @DecimalMin(value = "0", message = "โปรตีนต้องไม่ติดลบ")
+    @NotNull(message = "{validation.protein.required}")
+    @DecimalMin(value = "0", message = "{validation.protein.nonnegative}")
     private Double proteinPer100;
 
-    @NotNull(message = "กรุณากรอกคาร์โบไฮเดรต")
-    @DecimalMin(value = "0", message = "คาร์โบไฮเดรตต้องไม่ติดลบ")
+    @NotNull(message = "{validation.carbs.required}")
+    @DecimalMin(value = "0", message = "{validation.carbs.nonnegative}")
     private Double carbohydratePer100;
 
-    @NotNull(message = "กรุณากรอกไขมัน")
-    @DecimalMin(value = "0", message = "ไขมันต้องไม่ติดลบ")
+    @NotNull(message = "{validation.fat.required}")
+    @DecimalMin(value = "0", message = "{validation.fat.nonnegative}")
     private Double fatPer100;
 
     public String getName() { return name; }

@@ -9,39 +9,39 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class FoodEntryForm {
-    @NotNull(message = "กรุณาเลือกวันที่")
-    @PastOrPresent(message = "ยังไม่สามารถบันทึกอาหารล่วงหน้าได้")
+    @NotNull(message = "{validation.date.required}")
+    @PastOrPresent(message = "{validation.date.future}")
     private LocalDate logDate = LocalDate.now();
 
-    @NotBlank(message = "กรุณาเลือกมื้ออาหาร")
+    @NotBlank(message = "{validation.meal.required}")
     private String mealType = "breakfast";
 
-    @NotBlank(message = "กรุณากรอกชื่ออาหาร")
-    @Size(max = 160, message = "ชื่ออาหารต้องไม่เกิน 160 ตัวอักษร")
+    @NotBlank(message = "{validation.food.required}")
+    @Size(max = 160, message = "{validation.food.size}")
     private String foodName;
 
-    @NotNull(message = "กรุณากรอกจำนวน")
-    @DecimalMin(value = "0.01", message = "จำนวนต้องมากกว่า 0")
+    @NotNull(message = "{validation.quantity.required}")
+    @DecimalMin(value = "0.01", message = "{validation.quantity.positive}")
     private Double servingQuantity = 1.0;
 
-    @NotBlank(message = "กรุณาเลือกหน่วยบริโภค")
-    @Pattern(regexp = "^(g|ml)$", message = "หน่วยบริโภคต้องเป็นกรัมหรือมิลลิลิตร")
+    @NotBlank(message = "{validation.unit.required}")
+    @Pattern(regexp = "^(g|ml)$", message = "{validation.unit.invalid}")
     private String servingUnit = "g";
 
-    @NotNull(message = "กรุณากรอกแคลอรี่")
-    @DecimalMin(value = "0.0", message = "แคลอรี่ต้องไม่ติดลบ")
+    @NotNull(message = "{validation.calories.required}")
+    @DecimalMin(value = "0.0", message = "{validation.calories.nonnegative}")
     private Double calories;
 
-    @NotNull(message = "กรุณากรอกโปรตีน")
-    @DecimalMin(value = "0.0", message = "โปรตีนต้องไม่ติดลบ")
+    @NotNull(message = "{validation.protein.required}")
+    @DecimalMin(value = "0.0", message = "{validation.protein.nonnegative}")
     private Double proteinGrams = 0.0;
 
-    @NotNull(message = "กรุณากรอกคาร์โบไฮเดรต")
-    @DecimalMin(value = "0.0", message = "คาร์โบไฮเดรตต้องไม่ติดลบ")
+    @NotNull(message = "{validation.carbs.required}")
+    @DecimalMin(value = "0.0", message = "{validation.carbs.nonnegative}")
     private Double carbohydrateGrams = 0.0;
 
-    @NotNull(message = "กรุณากรอกไขมัน")
-    @DecimalMin(value = "0.0", message = "ไขมันต้องไม่ติดลบ")
+    @NotNull(message = "{validation.fat.required}")
+    @DecimalMin(value = "0.0", message = "{validation.fat.nonnegative}")
     private Double fatGrams = 0.0;
 
     public LocalDate getLogDate() { return logDate; }

@@ -1,150 +1,42 @@
 <!DOCTYPE html>
-<html lang="th" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Calorie Compass</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-</head>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title th:text="#{home.title}">Calorie Compass</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
 <body>
 <main class="page-shell">
-    <nav class="top-nav">
-        <a class="brand" href="/">Calorie Compass</a>
-        <div class="account-menu">
-            <a class="nav-link" th:href="@{/diary}">Food Diary</a>
-            <a class="nav-link" th:href="@{/history}">ประวัติ</a>
-            <a class="nav-link" th:href="@{/profile}">โปรไฟล์</a>
-            <span>สวัสดี <b th:text="${displayName}">ผู้ใช้</b></span>
-            <form th:action="@{/logout}" method="post"><button class="logout-button" type="submit">ออกจากระบบ</button></form>
-        </div>
-    </nav>
-    <header class="hero">
-        <span class="eyebrow">CALORIE COMPASS</span>
-        <h1>เริ่มจากข้อมูลของคุณ<br>ไปสู่เป้าหมายที่ทำได้จริง</h1>
-        <p>คำนวณพลังงานและสารอาหารตั้งต้น แล้วนำไปปรับจากผลลัพธ์จริงในแต่ละสัปดาห์</p>
-    </header>
-
+    <nav th:replace="~{fragments :: nav('plan')}"></nav>
+    <header class="hero"><span class="eyebrow" th:text="#{home.eyebrow}"></span><h1 th:text="#{home.heading}"></h1><p th:text="#{home.intro}"></p></header>
     <section class="layout">
         <form class="card form-card" th:action="@{/calculate}" th:object="${profile}" method="post">
-            <div class="section-heading"><span>01</span><div><h2>ข้อมูลร่างกาย</h2><p>กรอกค่าปัจจุบันเพื่อประเมินความต้องการพลังงาน</p></div></div>
-
+            <div class="section-heading"><span>01</span><div><h2 th:text="#{home.body}"></h2><p th:text="#{home.bodyHelp}"></p></div></div>
             <div class="field-grid">
-                <label>อายุ <small>ปี</small>
-                    <input type="number" th:field="*{age}" min="15" max="100">
-                    <em th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></em>
-                </label>
-                <label>เพศที่ใช้คำนวณ
-                    <select th:field="*{sex}"><option value="">เลือก</option><option value="male">ชาย</option><option value="female">หญิง</option></select>
-                    <em th:if="${#fields.hasErrors('sex')}" th:errors="*{sex}"></em>
-                </label>
-                <label>น้ำหนัก <small>กก.</small>
-                    <input type="number" step="0.1" th:field="*{weightKg}">
-                    <em th:if="${#fields.hasErrors('weightKg')}" th:errors="*{weightKg}"></em>
-                </label>
-                <label>ส่วนสูง <small>ซม.</small>
-                    <input type="number" step="0.1" th:field="*{heightCm}">
-                    <em th:if="${#fields.hasErrors('heightCm')}" th:errors="*{heightCm}"></em>
-                </label>
+                <label><span th:text="#{home.age}"></span> <small th:text="#{home.years}"></small><input type="number" th:field="*{age}" min="15" max="100"><em th:errors="*{age}"></em></label>
+                <label><span th:text="#{home.sex}"></span><select th:field="*{sex}"><option value="" th:text="#{home.choose}"></option><option value="male" th:text="#{home.male}"></option><option value="female" th:text="#{home.female}"></option></select><em th:errors="*{sex}"></em></label>
+                <label><span th:text="#{home.weight}"></span> <small th:text="#{unit.kg}"></small><input type="number" step="0.1" th:field="*{weightKg}"><em th:errors="*{weightKg}"></em></label>
+                <label><span th:text="#{home.height}"></span> <small>cm</small><input type="number" step="0.1" th:field="*{heightCm}"><em th:errors="*{heightCm}"></em></label>
             </div>
-
             <div class="body-fat-box">
-                <h3>เปอร์เซ็นต์ไขมัน</h3>
-                <div class="body-fat-modes">
-                    <label><input type="radio" th:field="*{bodyFatMode}" value="skip"><span>ไม่ทราบ / ข้าม</span></label>
-                    <label><input type="radio" th:field="*{bodyFatMode}" value="direct"><span>กรอกค่าที่ทราบ</span></label>
-                    <label><input type="radio" th:field="*{bodyFatMode}" value="tape"><span>ประเมินด้วยสายวัด</span></label>
-                </div>
-
-                <div id="direct-fields" class="body-fat-fields">
-                    <label>เปอร์เซ็นต์ไขมัน <small>%</small>
-                        <input type="number" step="0.1" th:field="*{bodyFatPercent}">
-                        <em th:if="${#fields.hasErrors('bodyFatPercent')}" th:errors="*{bodyFatPercent}"></em>
-                    </label>
-                </div>
-
+                <h3 th:text="#{home.bodyFat}"></h3>
+                <div class="body-fat-modes"><label><input type="radio" th:field="*{bodyFatMode}" value="skip"><span th:text="#{home.skip}"></span></label><label><input type="radio" th:field="*{bodyFatMode}" value="direct"><span th:text="#{home.direct}"></span></label><label><input type="radio" th:field="*{bodyFatMode}" value="tape"><span th:text="#{home.tape}"></span></label></div>
+                <div id="direct-fields" class="body-fat-fields"><label><span th:text="#{home.bodyFat}"></span> <small>%</small><input type="number" step="0.1" th:field="*{bodyFatPercent}"><em th:errors="*{bodyFatPercent}"></em></label></div>
                 <div id="tape-fields" class="body-fat-fields">
-                    <div class="measurement-guide">
-                        <h4>วิธีวัดให้ใกล้เคียงกันทุกครั้ง</h4>
-                        <ol>
-                            <li>ใช้สายวัดนิ่ม วัดแนบผิวแต่ไม่รัด และยืนผ่อนคลาย</li>
-                            <li><b>รอบคอ:</b> วัดใต้ลูกกระเดือกเล็กน้อย ให้สายลาดลงทางด้านหน้า</li>
-                            <li><b>ผู้ชาย — รอบเอว:</b> วัดระดับสะดือ หลังหายใจออกตามปกติ</li>
-                            <li><b>ผู้หญิง — รอบเอว:</b> วัดส่วนที่คอดที่สุด และวัดสะโพกส่วนที่กว้างที่สุด</li>
-                            <li>วัด 2–3 ครั้งในเวลาใกล้เคียงกัน แล้วใช้ค่าเฉลี่ย</li>
-                        </ol>
-                        <p>ผลเป็นเพียงค่าประมาณจากสัดส่วนร่างกาย เหมาะสำหรับติดตามแนวโน้ม ไม่ใช่การวินิจฉัย</p>
-                    </div>
-                    <div class="field-grid measurement-grid">
-                        <label>รอบคอ <small>ซม.</small><input type="number" step="0.1" th:field="*{neckCm}"><em th:errors="*{neckCm}"></em></label>
-                        <label>รอบเอว <small>ซม.</small><input type="number" step="0.1" th:field="*{waistCm}"><em th:errors="*{waistCm}"></em></label>
-                        <label id="hip-field">รอบสะโพก <small>ซม. — สำหรับผู้หญิง</small><input type="number" step="0.1" th:field="*{hipCm}"><em th:errors="*{hipCm}"></em></label>
-                    </div>
+                    <div class="measurement-guide"><h4 th:text="#{home.measureGuide}"></h4><ol><li th:text="#{home.measure1}"></li><li th:text="#{home.measure2}"></li><li th:text="#{home.measure3}"></li><li th:text="#{home.measure4}"></li><li th:text="#{home.measure5}"></li></ol><p th:text="#{home.measureNotice}"></p></div>
+                    <div class="field-grid measurement-grid"><label><span th:text="#{home.neck}"></span> <small>cm</small><input type="number" step="0.1" th:field="*{neckCm}"><em th:errors="*{neckCm}"></em></label><label><span th:text="#{home.waist}"></span> <small>cm</small><input type="number" step="0.1" th:field="*{waistCm}"><em th:errors="*{waistCm}"></em></label><label id="hip-field"><span th:text="#{home.hip}"></span> <small>cm — <span th:text="#{home.womenOnly}"></span></small><input type="number" step="0.1" th:field="*{hipCm}"><em th:errors="*{hipCm}"></em></label></div>
                 </div>
             </div>
-
-            <div class="section-heading spaced"><span>02</span><div><h2>กิจกรรมและเป้าหมาย</h2><p>เลือกระดับที่ใกล้เคียงชีวิตประจำวันมากที่สุด</p></div></div>
-            <label class="full-field">ระดับกิจกรรม
-                <select th:field="*{activityLevel}">
-                    <option value="1.2">นั่งทำงานเป็นหลัก / แทบไม่ออกกำลังกาย</option>
-                    <option value="1.375">ออกกำลังกายเบา 1–3 วันต่อสัปดาห์</option>
-                    <option value="1.55">ออกกำลังกายปานกลาง 3–5 วันต่อสัปดาห์</option>
-                    <option value="1.725">ออกกำลังกายหนัก 6–7 วันต่อสัปดาห์</option>
-                    <option value="1.9">ใช้แรงงานหรือฝึกหนักมากเป็นประจำ</option>
-                </select>
-            </label>
-
-            <div class="goal-options">
-                <label><input type="radio" th:field="*{goal}" value="lose"><span><b>ลดไขมัน</b><small>ต่ำกว่าค่ารักษาน้ำหนัก 15%</small></span></label>
-                <label><input type="radio" th:field="*{goal}" value="maintain"><span><b>รักษาน้ำหนัก</b><small>สมดุลพลังงานในแต่ละวัน</small></span></label>
-                <label><input type="radio" th:field="*{goal}" value="gain"><span><b>เพิ่มกล้ามเนื้อ</b><small>สูงกว่าค่ารักษาน้ำหนัก 10%</small></span></label>
-            </div>
-            <button type="submit">คำนวณเป้าหมายของฉัน <span>→</span></button>
+            <div class="section-heading spaced"><span>02</span><div><h2 th:text="#{home.activityGoal}"></h2><p th:text="#{home.activityHelp}"></p></div></div>
+            <label class="full-field"><span th:text="#{home.activity}"></span><select th:field="*{activityLevel}"><option value="1.2" th:text="#{home.activity1}"></option><option value="1.375" th:text="#{home.activity2}"></option><option value="1.55" th:text="#{home.activity3}"></option><option value="1.725" th:text="#{home.activity4}"></option><option value="1.9" th:text="#{home.activity5}"></option></select></label>
+            <div class="goal-options"><label><input type="radio" th:field="*{goal}" value="lose"><span><b th:text="#{home.lose}"></b><small th:text="#{home.loseHelp}"></small></span></label><label><input type="radio" th:field="*{goal}" value="maintain"><span><b th:text="#{home.maintain}"></b><small th:text="#{home.maintainHelp}"></small></span></label><label><input type="radio" th:field="*{goal}" value="gain"><span><b th:text="#{home.gain}"></b><small th:text="#{home.gainHelp}"></small></span></label></div>
+            <button type="submit"><span class="button-label" th:text="#{home.calculate}"></span><span>→</span></button>
         </form>
-
         <aside class="card result-card">
-            <div th:if="${result == null}" class="empty-state">
-                <div class="dial"><span>0</span><small>kcal</small></div>
-                <h2>ผลลัพธ์จะปรากฏที่นี่</h2>
-                <p>กรอกข้อมูลให้ครบแล้วกดคำนวณ เพื่อดูเป้าหมายแคลอรี่และสารอาหารต่อวัน</p>
-            </div>
-            <div th:if="${result != null}">
-                <span class="eyebrow">เป้าหมายต่อวัน</span>
-                <div class="saved-message" th:if="${saved}">บันทึกแผนวันนี้แล้ว</div>
-                <div class="estimate-message" th:if="${estimatedBodyFat}">ประเมินไขมันจากสายวัดได้ <b th:text="${profile.bodyFatPercent + '%'}"></b></div>
-                <div class="calorie-result"><strong th:text="${result.calorieTarget}">0</strong><span>kcal</span></div>
-                <p class="method">ประเมินด้วยสูตร <span th:text="${result.calculationMethod}"></span></p>
-                <div class="stats">
-                    <div><small>BMR</small><b><span th:text="${result.bmr}"></span> kcal</b></div>
-                    <div><small>รักษาน้ำหนัก</small><b><span th:text="${result.maintenanceCalories}"></span> kcal</b></div>
-                </div>
-                <h3>สารอาหารหลัก</h3>
-                <div class="macro protein"><span>โปรตีน</span><b><span th:text="${result.proteinGrams}"></span> g</b></div>
-                <div class="macro carbs"><span>คาร์โบไฮเดรต</span><b><span th:text="${result.carbohydrateGrams}"></span> g</b></div>
-                <div class="macro fat"><span>ไขมัน</span><b><span th:text="${result.fatGrams}"></span> g</b></div>
-                <p class="notice">ค่าที่ได้เป็นประมาณการเริ่มต้น ไม่ใช่คำแนะนำทางการแพทย์ ควรติดตามน้ำหนักและปรับตามผลจริง</p>
-            </div>
+            <div th:if="${result == null}" class="empty-state"><div class="dial"><span>0</span><small>kcal</small></div><h2 th:text="#{home.resultHere}"></h2><p th:text="#{home.resultHelp}"></p></div>
+            <div th:if="${result != null}"><span class="eyebrow" th:text="#{home.dailyTarget}"></span><div class="saved-message" th:if="${saved}" th:text="#{home.planSaved}"></div><div class="estimate-message" th:if="${estimatedBodyFat}"><span th:text="#{home.estimated}"></span> <b th:text="${profile.bodyFatPercent + '%'}"></b></div><div class="calorie-result"><strong th:text="${result.calorieTarget}">0</strong><span>kcal</span></div><p class="method"><span th:text="#{home.method}"></span> <span th:text="${result.calculationMethod}"></span></p><div class="stats"><div><small>BMR</small><b><span th:text="${result.bmr}"></span> kcal</b></div><div><small th:text="#{home.maintenance}"></small><b><span th:text="${result.maintenanceCalories}"></span> kcal</b></div></div><h3 th:text="#{home.macros}"></h3><div class="macro protein"><span th:text="#{home.protein}"></span><b><span th:text="${result.proteinGrams}"></span> g</b></div><div class="macro carbs"><span th:text="#{home.carbs}"></span><b><span th:text="${result.carbohydrateGrams}"></span> g</b></div><div class="macro fat"><span th:text="#{home.fat}"></span><b><span th:text="${result.fatGrams}"></span> g</b></div><p class="notice" th:text="#{home.notice}"></p></div>
         </aside>
     </section>
-
     <section class="card history-card">
-        <div class="section-heading"><span>03</span><div><h2>ประวัติแผนของฉัน</h2><p>แสดง 10 ครั้งล่าสุด เพื่อใช้ติดตามและปรับแผนในอนาคต</p></div></div>
-        <p class="history-empty" th:if="${history.isEmpty()}">ยังไม่มีประวัติ ลองคำนวณแผนแรกของคุณ</p>
-        <div class="table-wrap" th:unless="${history.isEmpty()}">
-            <table>
-                <thead><tr><th>วันที่</th><th>น้ำหนัก</th><th>เป้าหมาย</th><th>แคลอรี่</th><th>โปรตีน</th><th>คาร์บ</th><th>ไขมัน</th></tr></thead>
-                <tbody>
-                <tr th:each="item : ${history}">
-                    <td th:text="${#temporals.format(item.planDate, 'dd/MM/yyyy')}"></td>
-                    <td><span th:text="${item.weightKg}"></span> กก.</td>
-                    <td th:switch="${item.goal}"><span th:case="'lose'">ลดไขมัน</span><span th:case="'gain'">เพิ่มกล้ามเนื้อ</span><span th:case="*">รักษาน้ำหนัก</span></td>
-                    <td><b th:text="${item.calorieTarget}"></b> kcal</td>
-                    <td><span th:text="${item.proteinGrams}"></span> g</td>
-                    <td><span th:text="${item.carbohydrateGrams}"></span> g</td>
-                    <td><span th:text="${item.fatGrams}"></span> g</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+        <div class="section-heading"><span>03</span><div><h2 th:text="#{home.planHistory}"></h2><p th:text="#{home.planHistoryHelp}"></p></div></div>
+        <p class="history-empty" th:if="${history.isEmpty()}" th:text="#{home.noHistory}"></p>
+        <div class="table-wrap" th:unless="${history.isEmpty()}"><table><thead><tr><th th:text="#{home.date}"></th><th th:text="#{home.weight}"></th><th th:text="#{home.goal}"></th><th th:text="#{diary.calories}"></th><th th:text="#{home.protein}"></th><th th:text="#{home.carbs}"></th><th th:text="#{home.fat}"></th></tr></thead><tbody><tr th:each="item : ${history}"><td th:text="${#temporals.format(item.planDate, 'dd/MM/yyyy')}"></td><td><span th:text="${item.weightKg}"></span> <span th:text="#{unit.kg}"></span></td><td th:switch="${item.goal}"><span th:case="'lose'" th:text="#{home.lose}"></span><span th:case="'gain'" th:text="#{home.gain}"></span><span th:case="*" th:text="#{home.maintain}"></span></td><td><b th:text="${item.calorieTarget}"></b> kcal</td><td><span th:text="${item.proteinGrams}"></span> g</td><td><span th:text="${item.carbohydrateGrams}"></span> g</td><td><span th:text="${item.fatGrams}"></span> g</td></tr></tbody></table></div>
     </section>
 </main>
 <script>

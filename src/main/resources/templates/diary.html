@@ -1,171 +1,168 @@
 <!DOCTYPE html>
-<html lang="th" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Food Diary | Calorie Compass</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title th:text="#{diary.title}">บันทึกอาหาร | Calorie Compass</title><link rel="stylesheet" th:href="@{/css/styles.css}"></head>
 <body>
 <main class="page-shell">
-    <nav class="top-nav">
-        <a class="brand" href="/">Calorie Compass</a>
-        <div class="account-menu"><a class="nav-link" th:href="@{/}">แผน</a><a class="nav-link" th:href="@{/history}">ประวัติ</a><a class="nav-link" th:href="@{/profile}">โปรไฟล์</a><span>สวัสดี <b th:text="${displayName}"></b></span><form th:action="@{/logout}" method="post"><button class="logout-button" type="submit">ออกจากระบบ</button></form></div>
-    </nav>
-
+    <nav th:replace="~{fragments :: nav('diary')}"></nav>
     <header class="diary-header">
-        <div><span class="eyebrow">FOOD DIARY</span><h1>วันนี้กินอะไรไปบ้าง?</h1><p>บันทึกอาหาร แล้วระบบจะเทียบกับแผนที่มีผลในวันนั้น</p></div>
-        <form class="date-picker" method="get" th:action="@{/diary}"><label>เลือกวันที่<input type="date" name="date" th:value="${selectedDate}" max="9999-12-31" onchange="this.form.submit()"></label></form>
+        <div><span class="eyebrow" th:text="#{diary.eyebrow}"></span><h1 th:text="#{diary.heading}"></h1><p th:text="#{diary.intro}"></p></div>
+        <form class="date-picker" method="get" th:action="@{/diary}"><label><span th:text="#{diary.date}"></span><input type="date" name="date" th:value="${selectedDate}" max="9999-12-31" onchange="this.form.submit()"></label></form>
     </header>
 
-    <div class="alert success" th:if="${param.saved}">บันทึกอาหารเรียบร้อยแล้ว</div>
-    <div class="alert success" th:if="${param.updated}">แก้ไขรายการอาหารเรียบร้อยแล้ว</div>
-    <div class="alert" th:if="${param.deleted}">ลบรายการเรียบร้อยแล้ว</div>
-    <div class="alert success" th:if="${param.foodCreated}">เพิ่มอาหารลงคลังของฉันแล้ว</div>
-    <div class="alert success" th:if="${param.foodUpdated}">แก้ไขอาหารของฉันเรียบร้อยแล้ว</div>
-    <div class="alert" th:if="${param.foodDeleted}">ลบอาหารออกจากคลังแล้ว</div>
-    <div class="alert error" th:if="${param.foodInvalid}">เพิ่มอาหารไม่ได้ กรุณากรอกชื่อและสารอาหารให้ครบ โดยตัวเลขต้องไม่ติดลบ</div>
-    <div class="alert error" th:unless="${summary.hasPlan}">ยังไม่มีแผนสำหรับวันนี้ กรุณาคำนวณแผนก่อนเพื่อดูปริมาณคงเหลือ</div>
+    <div class="alert success" th:if="${param.saved}" th:text="#{diary.saved}"></div>
+    <div class="alert success" th:if="${param.updated}" th:text="#{diary.updated}"></div>
+    <div class="alert" th:if="${param.deleted}" th:text="#{diary.deleted}"></div>
+    <div class="alert success" th:if="${param.copied}" th:text="#{diary.copied}"></div>
+    <div class="alert" th:if="${param.nothingToCopy}" th:text="#{diary.nothingToCopy}"></div>
+    <div class="alert success" th:if="${param.foodCreated}" th:text="#{diary.foodCreated}"></div>
+    <div class="alert success" th:if="${param.foodUpdated}" th:text="#{diary.foodUpdated}"></div>
+    <div class="alert" th:if="${param.foodDeleted}" th:text="#{diary.foodDeleted}"></div>
+    <div class="alert error" th:if="${param.foodInvalid}" th:text="#{diary.foodInvalid}"></div>
+    <div class="alert error" th:unless="${summary.hasPlan}" th:text="#{diary.noPlan}"></div>
 
     <section class="diary-summary" th:classappend="${summary.hasPlan} ? '' : ' no-plan'">
-        <article class="summary-main"><small>แคลอรี่คงเหลือ</small><strong th:text="${summary.remainingCalories}">0</strong><span>kcal</span><p><b th:text="${summary.consumedCalories}"></b> กินแล้ว จากเป้าหมาย <b th:text="${summary.calorieTarget}"></b></p></article>
-        <article><small>โปรตีน</small><strong><span th:text="${summary.remainingProtein}"></span> g</strong><p><span th:text="${summary.consumedProtein}"></span> / <span th:text="${summary.proteinTarget}"></span> g</p></article>
-        <article><small>คาร์โบไฮเดรต</small><strong><span th:text="${summary.remainingCarbohydrate}"></span> g</strong><p><span th:text="${summary.consumedCarbohydrate}"></span> / <span th:text="${summary.carbohydrateTarget}"></span> g</p></article>
-        <article><small>ไขมัน</small><strong><span th:text="${summary.remainingFat}"></span> g</strong><p><span th:text="${summary.consumedFat}"></span> / <span th:text="${summary.fatTarget}"></span> g</p></article>
+        <article class="summary-main"><small th:text="#{diary.remaining}"></small><strong th:text="${summary.remainingCalories}">0</strong><span>kcal</span><p><b th:text="${summary.consumedCalories}"></b> <span th:text="#{diary.consumed}"></span> <b th:text="${summary.calorieTarget}"></b></p></article>
+        <article><small th:text="#{diary.protein}"></small><strong><span th:text="${summary.remainingProtein}"></span> g</strong><p><span th:text="${summary.consumedProtein}"></span> / <span th:text="${summary.proteinTarget}"></span> g</p></article>
+        <article><small th:text="#{diary.carbs}"></small><strong><span th:text="${summary.remainingCarbohydrate}"></span> g</strong><p><span th:text="${summary.consumedCarbohydrate}"></span> / <span th:text="${summary.carbohydrateTarget}"></span> g</p></article>
+        <article><small th:text="#{diary.fat}"></small><strong><span th:text="${summary.remainingFat}"></span> g</strong><p><span th:text="${summary.consumedFat}"></span> / <span th:text="${summary.fatTarget}"></span> g</p></article>
+    </section>
+
+    <section class="card copy-meal-card">
+        <div class="section-heading"><span>↻</span><div><h2 th:text="#{diary.copyMeal}"></h2><p th:text="#{diary.copyHelp}"></p></div></div>
+        <form class="copy-meal-form" th:action="@{/diary/copy-meal}" method="post">
+            <input type="hidden" name="targetDate" th:value="${selectedDate}">
+            <label><span th:text="#{diary.sourceDate}"></span><input type="date" name="sourceDate" th:value="${selectedDate.minusDays(1)}" th:max="${selectedDate}" required></label>
+            <label><span th:text="#{diary.meal}"></span><select name="mealType"><option value="breakfast" th:text="#{meal.breakfast}"></option><option value="lunch" th:text="#{meal.lunch}"></option><option value="dinner" th:text="#{meal.dinner}"></option><option value="snack" th:text="#{meal.snack}"></option></select></label>
+            <button type="submit" th:text="#{diary.copySubmit}"></button>
+        </form>
     </section>
 
     <section class="diary-layout">
         <form class="card food-form" th:action="${editingEntryId == null} ? @{/diary} : @{/diary/{id}(id=${editingEntryId})}" th:object="${foodEntry}" method="post">
-            <div class="section-heading"><span th:text="${editingEntryId == null} ? '+' : '✎'">+</span><div><h2 th:text="${editingEntryId == null} ? 'บันทึกมื้ออาหาร' : 'แก้ไขมื้ออาหาร'">บันทึกมื้ออาหาร</h2><p>กรอกชื่อ ปริมาณ แคลอรี่ และสารอาหารจากฉลากด้วยตัวเอง</p></div></div>
+            <div class="section-heading"><span th:text="${editingEntryId == null} ? '+' : '✎'">+</span><div>
+                <h2 th:if="${editingEntryId != null}" th:text="#{diary.editTitle}"></h2>
+                <h2 th:if="${editingEntryId == null and repeatingEntry == null}" th:text="#{diary.addTitle}"></h2>
+                <h2 th:if="${repeatingEntry != null}" th:text="#{diary.repeatTitle}"></h2>
+                <p th:text="#{diary.formHelp}"></p>
+            </div></div>
             <div class="saved-food-picker">
-                <label for="saved-food-select">เลือกจากอาหารของฉัน</label>
+                <label for="saved-food-search" th:text="#{diary.savedFood}"></label>
+                <input id="saved-food-search" type="search" th:placeholder="#{diary.searchPlaceholder}" autocomplete="off" th:disabled="${customFoods.isEmpty()}">
                 <select id="saved-food-select" th:disabled="${customFoods.isEmpty()}">
-                    <option value="" th:text="${customFoods.isEmpty()} ? 'ยังไม่มีอาหารที่บันทึกไว้' : 'เลือกอาหารที่เคยบันทึกไว้'"></option>
-                    <option th:each="food : ${customFoods}"
-                            th:value="${food.id}"
-                            th:text="${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)}"
-                            th:attr="data-name=${food.name},data-brand=${food.brand},data-unit=${food.baseUnit},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
+                    <option value="" th:text="${customFoods.isEmpty()} ? #{diary.noSavedFood} : #{diary.chooseSavedFood}"></option>
+                    <option th:each="food : ${customFoods}" th:value="${food.id}" th:text="${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)}" th:attr="data-name=${food.name},data-brand=${food.brand},data-unit=${food.baseUnit},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
                 </select>
-                <p id="saved-food-note">เมื่อเลือก ระบบจะนำค่าโภชนาการต่อ 100 กรัมมาใส่ให้ จากนั้นคุณแก้จำนวนหรือข้อมูลได้</p>
+                <p id="saved-food-note" th:text="#{diary.savedFoodNote}"></p>
             </div>
             <input type="hidden" th:field="*{logDate}">
-            <label>มื้ออาหาร<select th:field="*{mealType}"><option value="breakfast">มื้อเช้า</option><option value="lunch">มื้อกลางวัน</option><option value="dinner">มื้อเย็น</option><option value="snack">ของว่าง</option></select><em th:errors="*{mealType}"></em></label>
-            <label class="full-field">ชื่ออาหาร<input type="text" th:field="*{foodName}"><em th:errors="*{foodName}"></em></label>
+            <label><span th:text="#{diary.meal}"></span><select th:field="*{mealType}"><option value="breakfast" th:text="#{meal.breakfast}"></option><option value="lunch" th:text="#{meal.lunch}"></option><option value="dinner" th:text="#{meal.dinner}"></option><option value="snack" th:text="#{meal.snack}"></option></select><em th:errors="*{mealType}"></em></label>
+            <label class="full-field"><span th:text="#{diary.foodName}"></span><input type="text" th:field="*{foodName}"><em th:errors="*{foodName}"></em></label>
             <div class="serving-row">
-                <label>จำนวน<input type="number" step="0.01" min="0.01" th:field="*{servingQuantity}"><em th:errors="*{servingQuantity}"></em></label>
-                <label>หน่วยบริโภค<select th:field="*{servingUnit}"><option value="g">กรัม</option><option value="ml">มิลลิลิตร</option></select><em th:errors="*{servingUnit}"></em></label>
+                <label><span th:text="#{diary.quantity}"></span><input type="number" step="0.01" min="0.01" th:field="*{servingQuantity}"><em th:errors="*{servingQuantity}"></em></label>
+                <label><span th:text="#{diary.servingUnit}"></span><select th:field="*{servingUnit}"><option value="g" th:text="#{unit.gram}"></option><option value="ml" th:text="#{unit.ml}"></option></select><em th:errors="*{servingUnit}"></em></label>
             </div>
             <div class="nutrition-inputs">
-                <label>แคลอรี่ <small>kcal</small><input type="number" step="0.1" th:field="*{calories}"><em th:errors="*{calories}"></em></label>
-                <label>โปรตีน <small>g</small><input type="number" step="0.1" th:field="*{proteinGrams}"><em th:errors="*{proteinGrams}"></em></label>
-                <label>คาร์บ <small>g</small><input type="number" step="0.1" th:field="*{carbohydrateGrams}"><em th:errors="*{carbohydrateGrams}"></em></label>
-                <label>ไขมัน <small>g</small><input type="number" step="0.1" th:field="*{fatGrams}"><em th:errors="*{fatGrams}"></em></label>
+                <label><span th:text="#{diary.calories}"></span> <small>kcal</small><input type="number" step="0.1" th:field="*{calories}"><em th:errors="*{calories}"></em></label>
+                <label><span th:text="#{diary.protein}"></span> <small>g</small><input type="number" step="0.1" th:field="*{proteinGrams}"><em th:errors="*{proteinGrams}"></em></label>
+                <label><span th:text="#{diary.carbs}"></span> <small>g</small><input type="number" step="0.1" th:field="*{carbohydrateGrams}"><em th:errors="*{carbohydrateGrams}"></em></label>
+                <label><span th:text="#{diary.fat}"></span> <small>g</small><input type="number" step="0.1" th:field="*{fatGrams}"><em th:errors="*{fatGrams}"></em></label>
             </div>
-            <button type="submit"><span class="button-label" th:text="${editingEntryId == null} ? 'บันทึกในไดอารี่' : 'บันทึกการแก้ไข'">บันทึกในไดอารี่</span><span>→</span></button>
-            <a class="cancel-edit" th:if="${editingEntryId != null}" th:href="@{/diary(date=${selectedDate})}">ยกเลิกการแก้ไข</a>
+            <button type="submit"><span class="button-label" th:text="${editingEntryId == null} ? #{diary.saveEntry} : #{diary.saveEdit}"></span><span>→</span></button>
+            <a class="cancel-edit" th:if="${editingEntryId != null}" th:href="@{/diary(date=${selectedDate})}" th:text="#{diary.cancelEdit}"></a>
         </form>
 
         <section class="card entries-card">
-            <div class="section-heading"><span>✓</span><div><h2>รายการอาหาร</h2><p th:text="${#temporals.format(selectedDate, 'dd/MM/yyyy')}"></p></div></div>
-            <p class="history-empty" th:if="${entries.isEmpty()}">ยังไม่มีอาหารที่บันทึกในวันนี้</p>
+            <div class="section-heading"><span>✓</span><div><h2 th:text="#{diary.entries}"></h2><p th:text="${#temporals.format(selectedDate, 'dd/MM/yyyy')}"></p></div></div>
+            <p class="history-empty" th:if="${entries.isEmpty()}" th:text="#{diary.noEntries}"></p>
             <div class="food-entry" th:each="entry : ${entries}">
-                <div class="food-entry-main"><span class="meal-label" th:switch="${entry.mealType}"><i th:case="'breakfast'">มื้อเช้า</i><i th:case="'lunch'">มื้อกลางวัน</i><i th:case="'dinner'">มื้อเย็น</i><i th:case="*">ของว่าง</i></span><h3 th:text="${entry.foodName}"></h3><small><span th:text="${#numbers.formatDecimal(entry.servingQuantity, 0, 2)}"></span> <span th:text="${entry.servingUnitLabel}"></span></small></div>
+                <div class="food-entry-main"><span class="meal-label" th:switch="${entry.mealType}"><i th:case="'breakfast'" th:text="#{meal.breakfast}"></i><i th:case="'lunch'" th:text="#{meal.lunch}"></i><i th:case="'dinner'" th:text="#{meal.dinner}"></i><i th:case="*" th:text="#{meal.snack}"></i></span><h3 th:text="${entry.foodName}"></h3><small><span th:text="${#numbers.formatDecimal(entry.servingQuantity, 0, 2)}"></span> <span th:text="${entry.servingUnit == 'ml' ? #messages.msg('unit.ml') : #messages.msg('unit.gram')}"></span></small></div>
                 <div class="food-nutrients"><b><span th:text="${#numbers.formatDecimal(entry.calories, 0, 0)}"></span> kcal</b><small>P <span th:text="${#numbers.formatDecimal(entry.proteinGrams, 0, 1)}"></span> · C <span th:text="${#numbers.formatDecimal(entry.carbohydrateGrams, 0, 1)}"></span> · F <span th:text="${#numbers.formatDecimal(entry.fatGrams, 0, 1)}"></span></small></div>
-                <div class="entry-actions"><a class="edit-button" th:href="@{/diary/{id}/edit(id=${entry.id})}" aria-label="แก้ไขรายการ">แก้ไข</a><form th:action="@{/diary/{id}/delete(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><button class="delete-button" type="submit" aria-label="ลบรายการ">×</button></form></div>
+                <div class="entry-actions"><a class="secondary-button" th:href="@{/diary/{id}/repeat(id=${entry.id},date=${selectedDate})}" th:text="#{diary.repeat}"></a><a class="edit-button" th:href="@{/diary/{id}/edit(id=${entry.id})}" th:text="#{common.edit}"></a><form th:action="@{/diary/{id}/delete(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><button class="delete-button" type="submit" th:aria-label="#{common.delete}">×</button></form></div>
             </div>
         </section>
     </section>
 
     <section id="custom-foods" class="card custom-food-card">
-        <div class="section-heading"><span>★</span><div><h2>อาหารของฉัน</h2><p>บันทึกอาหารที่ใช้บ่อยจากฉลาก เพื่อเปิดดูเป็นข้อมูลอ้างอิงเวลากรอกมื้ออาหาร</p></div></div>
+        <div class="section-heading"><span>★</span><div><h2 th:text="#{diary.myFoods}"></h2><p th:text="#{diary.myFoodsHelp}"></p></div></div>
         <div class="custom-food-layout">
             <form th:action="@{/foods/custom}" th:object="${customFood}" method="post">
-                <label>ชื่ออาหาร<input type="text" th:field="*{name}" required></label>
-                <label class="full-field">ยี่ห้อ <small>ไม่บังคับ</small><input type="text" th:field="*{brand}"></label>
-                <label class="full-field">ข้อมูลโภชนาการนี้คิดต่อ 100<select th:field="*{baseUnit}"><option value="g">กรัม</option><option value="ml">มิลลิลิตร</option></select></label>
+                <label><span th:text="#{diary.foodName}"></span><input type="text" th:field="*{name}" required></label>
+                <label class="full-field"><span th:text="#{diary.brand}"></span> <small th:text="#{common.optional}"></small><input type="text" th:field="*{brand}"></label>
+                <label class="full-field"><span th:text="#{diary.per100}"></span><select th:field="*{baseUnit}"><option value="g" th:text="#{unit.gram}"></option><option value="ml" th:text="#{unit.ml}"></option></select></label>
                 <div class="nutrition-inputs">
-                    <label>แคลอรี่ <small>ต่อ 100 หน่วย</small><input type="number" step="0.1" min="0" th:field="*{caloriesPer100}" required></label>
-                    <label>โปรตีน <small>กรัม/100 หน่วย</small><input type="number" step="0.1" min="0" th:field="*{proteinPer100}" required></label>
-                    <label>คาร์บ <small>กรัม/100 หน่วย</small><input type="number" step="0.1" min="0" th:field="*{carbohydratePer100}" required></label>
-                    <label>ไขมัน <small>กรัม/100 หน่วย</small><input type="number" step="0.1" min="0" th:field="*{fatPer100}" required></label>
+                    <label><span th:text="#{diary.calories}"></span> <small th:text="#{diary.per100short}"></small><input type="number" step="0.1" min="0" th:field="*{caloriesPer100}" required></label>
+                    <label><span th:text="#{diary.protein}"></span><input type="number" step="0.1" min="0" th:field="*{proteinPer100}" required></label>
+                    <label><span th:text="#{diary.carbs}"></span><input type="number" step="0.1" min="0" th:field="*{carbohydratePer100}" required></label>
+                    <label><span th:text="#{diary.fat}"></span><input type="number" step="0.1" min="0" th:field="*{fatPer100}" required></label>
                 </div>
-                <button type="submit">เพิ่มลงคลังอาหาร <span>→</span></button>
+                <button type="submit"><span class="button-label" th:text="#{diary.addFood}"></span><span>→</span></button>
             </form>
-            <div class="custom-food-list">
-                <p class="history-empty" th:if="${customFoods.isEmpty()}">ยังไม่มีอาหารส่วนตัว เพิ่มรายการแรกจากแบบฟอร์มด้านซ้ายได้เลย</p>
-                <div class="custom-food-item" th:each="food : ${customFoods}">
-                    <div><b th:text="${food.name}"></b><small><span th:if="${!food.brand.isBlank()}" th:text="${food.brand + ' · '}"></span><span th:text="${#numbers.formatDecimal(food.caloriesPer100, 0, 0) + ' kcal/100 ' + food.baseUnitLabel}"></span></small><small>P <span th:text="${#numbers.formatDecimal(food.proteinPer100, 0, 1)}"></span> · C <span th:text="${#numbers.formatDecimal(food.carbohydratePer100, 0, 1)}"></span> · F <span th:text="${#numbers.formatDecimal(food.fatPer100, 0, 1)}"></span> กรัม</small></div>
-                    <form th:action="@{/foods/custom/{id}/delete(id=${food.id})}" method="post"><button class="delete-button" type="submit" aria-label="ลบอาหาร">×</button></form>
-                    <details class="custom-food-editor">
-                        <summary>แก้ไขข้อมูลอาหาร</summary>
-                        <form th:action="@{/foods/custom/{id}(id=${food.id})}" method="post">
-                            <div class="field-grid">
-                                <label>ชื่ออาหาร<input type="text" name="name" th:value="${food.name}" required></label>
-                                <label>ยี่ห้อ<input type="text" name="brand" th:value="${food.brand}"></label>
-                                <label>ข้อมูลต่อ 100<select name="baseUnit"><option value="g" th:selected="${food.baseUnit == 'g'}">กรัม</option><option value="ml" th:selected="${food.baseUnit == 'ml'}">มิลลิลิตร</option></select></label>
-                                <label>แคลอรี่<input type="number" name="caloriesPer100" step="0.1" min="0" th:value="${food.caloriesPer100}" required></label>
-                                <label>โปรตีน<input type="number" name="proteinPer100" step="0.1" min="0" th:value="${food.proteinPer100}" required></label>
-                                <label>คาร์บ<input type="number" name="carbohydratePer100" step="0.1" min="0" th:value="${food.carbohydratePer100}" required></label>
-                                <label>ไขมัน<input type="number" name="fatPer100" step="0.1" min="0" th:value="${food.fatPer100}" required></label>
-                            </div>
-                            <button type="submit">บันทึกการแก้ไข</button>
-                        </form>
-                    </details>
+            <div>
+                <label class="food-search"><span th:text="#{diary.searchFood}"></span><input id="custom-food-search" type="search" th:placeholder="#{diary.searchPlaceholder}" autocomplete="off"></label>
+                <div class="custom-food-list" id="custom-food-list">
+                    <p class="history-empty" th:if="${customFoods.isEmpty()}" th:text="#{diary.noCustomFood}"></p>
+                    <p class="search-empty" id="custom-food-search-empty" th:text="#{diary.noSearchResult}"></p>
+                    <div class="custom-food-item" th:each="food : ${customFoods}" th:attr="data-search=${food.name + ' ' + food.brand}">
+                        <div><b th:text="${food.name}"></b><small><span th:if="${!food.brand.isBlank()}" th:text="${food.brand + ' · '}"></span><span th:text="${#numbers.formatDecimal(food.caloriesPer100, 0, 0) + ' kcal/100 ' + (food.baseUnit == 'ml' ? #messages.msg('unit.ml') : #messages.msg('unit.gram'))}"></span></small><small>P <span th:text="${#numbers.formatDecimal(food.proteinPer100, 0, 1)}"></span> · C <span th:text="${#numbers.formatDecimal(food.carbohydratePer100, 0, 1)}"></span> · F <span th:text="${#numbers.formatDecimal(food.fatPer100, 0, 1)}"></span> g</small></div>
+                        <form th:action="@{/foods/custom/{id}/delete(id=${food.id})}" method="post"><button class="delete-button" type="submit" th:aria-label="#{common.delete}">×</button></form>
+                        <details class="custom-food-editor"><summary th:text="#{diary.editFood}"></summary>
+                            <form th:action="@{/foods/custom/{id}(id=${food.id})}" method="post"><div class="field-grid">
+                                <label><span th:text="#{diary.foodName}"></span><input type="text" name="name" th:value="${food.name}" required></label><label><span th:text="#{diary.brand}"></span><input type="text" name="brand" th:value="${food.brand}"></label>
+                                <label><span th:text="#{diary.per100}"></span><select name="baseUnit"><option value="g" th:selected="${food.baseUnit == 'g'}" th:text="#{unit.gram}"></option><option value="ml" th:selected="${food.baseUnit == 'ml'}" th:text="#{unit.ml}"></option></select></label>
+                                <label><span th:text="#{diary.calories}"></span><input type="number" name="caloriesPer100" step="0.1" min="0" th:value="${food.caloriesPer100}" required></label><label><span th:text="#{diary.protein}"></span><input type="number" name="proteinPer100" step="0.1" min="0" th:value="${food.proteinPer100}" required></label><label><span th:text="#{diary.carbs}"></span><input type="number" name="carbohydratePer100" step="0.1" min="0" th:value="${food.carbohydratePer100}" required></label><label><span th:text="#{diary.fat}"></span><input type="number" name="fatPer100" step="0.1" min="0" th:value="${food.fatPer100}" required></label>
+                            </div><button type="submit" th:text="#{common.save}"></button></form>
+                        </details>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 </main>
 <script>
+    const isEnglish = document.documentElement.lang === 'en';
     const savedFoodSelect = document.getElementById('saved-food-select');
+    const savedFoodSearch = document.getElementById('saved-food-search');
     const savedFoodNote = document.getElementById('saved-food-note');
+    const originalOptions = Array.from(savedFoodSelect.options).slice(1);
     const field = name => document.querySelector(`[name="${name}"]`);
     let selectedFood = null;
 
+    savedFoodSearch?.addEventListener('input', () => {
+        const query = savedFoodSearch.value.trim().toLocaleLowerCase();
+        savedFoodSelect.replaceChildren(savedFoodSelect.options[0], ...originalOptions.filter(option =>
+            `${option.dataset.name} ${option.dataset.brand}`.toLocaleLowerCase().includes(query)));
+        savedFoodSelect.value = '';
+        selectedFood = null;
+    });
     savedFoodSelect.addEventListener('change', () => {
         const option = savedFoodSelect.selectedOptions[0];
-        if (!option.value) {
-            selectedFood = null;
-            return;
-        }
-        selectedFood = {
-            unit: option.dataset.unit,
-            calories: Number(option.dataset.calories),
-            protein: Number(option.dataset.protein),
-            carbs: Number(option.dataset.carbs),
-            fat: Number(option.dataset.fat)
-        };
+        if (!option?.value) { selectedFood = null; return; }
+        selectedFood = { unit:option.dataset.unit, calories:Number(option.dataset.calories), protein:Number(option.dataset.protein), carbs:Number(option.dataset.carbs), fat:Number(option.dataset.fat) };
         field('foodName').value = option.dataset.name + (option.dataset.brand ? ` — ${option.dataset.brand}` : '');
         field('servingQuantity').value = 100;
         field('servingUnit').value = selectedFood.unit;
         updateNutrition(1);
-        const unitLabel = selectedFood.unit === 'ml' ? 'มิลลิลิตร' : 'กรัม';
-        savedFoodNote.textContent = `นำข้อมูลต่อ 100 ${unitLabel} มาใส่แล้ว เปลี่ยนจำนวนเพื่อคำนวณสารอาหารอัตโนมัติได้`;
+        const unitLabel = selectedFood.unit === 'ml' ? (isEnglish ? 'milliliters' : 'มิลลิลิตร') : (isEnglish ? 'grams' : 'กรัม');
+        savedFoodNote.textContent = isEnglish ? `Nutrition per 100 ${unitLabel} has been filled. Change the amount to recalculate automatically.` : `นำข้อมูลต่อ 100 ${unitLabel} มาใส่แล้ว เปลี่ยนจำนวนเพื่อคำนวณสารอาหารอัตโนมัติได้`;
     });
-
     field('servingQuantity').addEventListener('input', updateFromQuantity);
     field('servingUnit').addEventListener('change', () => {
         if (!selectedFood) return;
-        if (field('servingUnit').value === selectedFood.unit) {
-            updateFromQuantity();
-            savedFoodNote.textContent = 'กำลังคำนวณตามหน่วยอ้างอิงของอาหารที่เลือก';
-        } else {
-            selectedFood = null;
-            savedFoodSelect.value = '';
-            savedFoodNote.textContent = 'หน่วยไม่ตรงกับข้อมูลอ้างอิง กรุณากรอกค่าโภชนาการให้ตรงกับปริมาณด้วยตัวเอง';
-        }
+        if (field('servingUnit').value === selectedFood.unit) updateFromQuantity();
+        else { selectedFood = null; savedFoodSelect.value = ''; savedFoodNote.textContent = isEnglish ? 'The unit differs from the saved food. Enter nutrition for this amount manually.' : 'หน่วยไม่ตรงกับข้อมูลอ้างอิง กรุณากรอกค่าโภชนาการให้ตรงกับปริมาณด้วยตัวเอง'; }
     });
+    function updateFromQuantity() { if (selectedFood && field('servingUnit').value === selectedFood.unit) updateNutrition((Number(field('servingQuantity').value) || 0) / 100); }
+    function updateNutrition(factor) { field('calories').value=round(selectedFood.calories*factor); field('proteinGrams').value=round(selectedFood.protein*factor); field('carbohydrateGrams').value=round(selectedFood.carbs*factor); field('fatGrams').value=round(selectedFood.fat*factor); }
+    function round(value) { return Math.round(value * 10) / 10; }
 
-    function updateFromQuantity() {
-        if (!selectedFood || field('servingUnit').value !== selectedFood.unit) return;
-        updateNutrition((Number(field('servingQuantity').value) || 0) / 100);
-    }
-
-    function updateNutrition(factor) {
-        field('calories').value = round(selectedFood.calories * factor);
-        field('proteinGrams').value = round(selectedFood.protein * factor);
-        field('carbohydrateGrams').value = round(selectedFood.carbs * factor);
-        field('fatGrams').value = round(selectedFood.fat * factor);
-    }
-
-    function round(value) {
-        return Math.round(value * 10) / 10;
-    }
+    const customFoodSearch = document.getElementById('custom-food-search');
+    customFoodSearch?.addEventListener('input', () => {
+        const query = customFoodSearch.value.trim().toLocaleLowerCase();
+        const items = Array.from(document.querySelectorAll('.custom-food-item'));
+        let shown = 0;
+        items.forEach(item => { const match = item.dataset.search.toLocaleLowerCase().includes(query); item.hidden = !match; if (match) shown++; });
+        document.getElementById('custom-food-search-empty').style.display = items.length > 0 && shown === 0 ? 'block' : 'none';
+    });
 </script>
 </body>
 </html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="top-nav" th:fragment="nav(active)">
+    <a class="brand" th:href="@{/}"><span class="brand-mark">C</span> Calorie Compass</a>
+    <div class="account-menu">
+        <a class="nav-link" th:classappend="${active == 'plan'} ? ' active'" th:href="@{/}" th:text="#{nav.plan}">แผน</a>
+        <a class="nav-link" th:classappend="${active == 'diary'} ? ' active'" th:href="@{/diary}" th:text="#{nav.diary}">บันทึกอาหาร</a>
+        <a class="nav-link" th:classappend="${active == 'history'} ? ' active'" th:href="@{/history}" th:text="#{nav.history}">ประวัติ</a>
+        <a class="nav-link" th:classappend="${active == 'profile'} ? ' active'" th:href="@{/profile}" th:text="#{nav.profile}">โปรไฟล์</a>
+        <div class="language-switch" th:fragment="languageSwitch">
+            <a href="?lang=th" th:classappend="${#locale.language == 'th'} ? ' active'">TH</a>
+            <span>/</span>
+            <a href="?lang=en" th:classappend="${#locale.language == 'en'} ? ' active'">EN</a>
+        </div>
+        <span class="welcome"><span th:text="#{nav.hello}">สวัสดี</span> <b th:text="${displayName}"></b></span>
+        <form th:action="@{/logout}" method="post"><button class="logout-button" type="submit" th:text="#{nav.logout}">ออกจากระบบ</button></form>
+    </div>
+</nav>
+</body>
+</html>
