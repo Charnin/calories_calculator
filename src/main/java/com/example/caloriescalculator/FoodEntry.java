@@ -41,8 +41,6 @@ public class FoodEntry {
     public FoodEntry(AppUser user, FoodEntryForm form) {
         this.user = user;
         update(form);
-        this.dataSource = "manual";
-        this.externalFoodId = null;
         this.createdAt = Instant.now();
     }
 
@@ -52,6 +50,12 @@ public class FoodEntry {
         this.foodName = form.getFoodName().trim();
         this.servingQuantity = form.getServingQuantity();
         this.servingUnit = form.getServingUnit();
+        this.servingDescription = clean(form.getServingDescription(), 120);
+        this.dataSource = switch (form.getDataSource() == null ? "manual" : form.getDataSource()) {
+            case "reference", "estimate", "custom" -> form.getDataSource();
+            default -> "manual";
+        };
+        this.externalFoodId = clean(form.getExternalFoodId(), 80);
         this.calories = form.getCalories();
         this.proteinGrams = form.getProteinGrams();
         this.carbohydrateGrams = form.getCarbohydrateGrams();
@@ -77,12 +81,29 @@ public class FoodEntry {
         return copy;
     }
 
+    public void scaleBy(double multiplier) {
+        if (multiplier <= 0) throw new IllegalArgumentException("Multiplier must be positive");
+        this.servingQuantity = round(this.getServingQuantity() * multiplier);
+        this.calories = round(this.calories * multiplier);
+        this.proteinGrams = round(this.proteinGrams * multiplier);
+        this.carbohydrateGrams = round(this.carbohydrateGrams * multiplier);
+        this.fatGrams = round(this.fatGrams * multiplier);
+    }
+
+    private double round(double value) { return Math.round(value * 100.0) / 100.0; }
+    private String clean(String value, int limit) {
+        if (value == null || value.isBlank()) return null;
+        String cleaned = value.trim();
+        return cleaned.substring(0, Math.min(cleaned.length(), limit));
+    }
+
     public Long getId() { return id; }
     public LocalDate getLogDate() { return logDate; }
     public String getMealType() { return mealType; }
     public String getFoodName() { return foodName; }
     public Double getServingQuantity() { return servingQuantity == null ? 1.0 : servingQuantity; }
     public String getServingUnit() { return servingUnit; }
+    public String getServingDescription() { return servingDescription; }
     public String getServingUnitLabel() {
         if (servingUnit == null) {
             return servingDescription == null || servingDescription.isBlank() ? "หน่วยบริโภค" : servingDescription;

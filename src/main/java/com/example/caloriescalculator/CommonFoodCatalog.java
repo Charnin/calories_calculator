@@ -52,9 +52,11 @@ public class CommonFoodCatalog implements ApplicationRunner {
     private Serving servingFor(String foodCode, String category, String baseUnit) {
         if (foodCode.startsWith("EST")) {
             int number = Integer.parseInt(foodCode.substring(3));
+            if (number == 47) return new Serving(50, "1 ฟอง", "1 egg");
+            if (number == 48) return new Serving(100, "1 ที่", "1 serving");
             if (number >= 4 && number <= 18) return new Serving(300, "1 จาน", "1 plate");
             if (number >= 35 && number <= 39) return new Serving(400, "1 ชาม", "1 bowl");
-            if (number >= 43) return new Serving(250, "1 แก้ว", "1 glass");
+            if (number >= 43 && number <= 46) return new Serving(250, "1 แก้ว", "1 glass");
             if (number >= 40) return new Serving(100, "1 ที่", "1 serving");
             return new Serving(150, "1 ที่", "1 serving");
         }

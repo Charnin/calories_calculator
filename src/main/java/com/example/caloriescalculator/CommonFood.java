@@ -94,4 +94,5 @@ public class CommonFood {
     public String getServingLabelEn() { return servingLabelEn == null ? "100 grams" : servingLabelEn; }
     public String getSourceName() { return sourceName; }
     public String getSourceUrl() { return sourceUrl; }
+    public boolean isEstimated() { return sourceName != null && sourceName.startsWith("ค่าประมาณ"); }
 }

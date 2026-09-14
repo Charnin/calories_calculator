@@ -20,13 +20,16 @@ public class FoodDiaryController {
     private final FoodDiaryService diaryService;
     private final CustomFoodService customFoodService;
     private final CommonFoodCatalog commonFoodCatalog;
+    private final FavoriteFoodService favoriteFoodService;
 
     public FoodDiaryController(UserAccountService accountService, FoodDiaryService diaryService,
-                               CustomFoodService customFoodService, CommonFoodCatalog commonFoodCatalog) {
+                               CustomFoodService customFoodService, CommonFoodCatalog commonFoodCatalog,
+                               FavoriteFoodService favoriteFoodService) {
         this.accountService = accountService;
         this.diaryService = diaryService;
         this.customFoodService = customFoodService;
         this.commonFoodCatalog = commonFoodCatalog;
+        this.favoriteFoodService = favoriteFoodService;
     }
 
     @GetMapping("/diary")
@@ -91,6 +94,24 @@ public class FoodDiaryController {
         return "redirect:/diary?date=" + date + "&updated";
     }
 
+    @PostMapping("/diary/{id}/scale")
+    public String scaleFood(@PathVariable Long id, @RequestParam double multiplier,
+                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                            Principal principal) {
+        AppUser user = accountService.requireByEmail(principal.getName());
+        diaryService.scale(user, id, multiplier);
+        return "redirect:/diary?date=" + date + "&updated";
+    }
+
+    @PostMapping("/foods/favorites/toggle")
+    public String toggleFavorite(@RequestParam String foodKey,
+                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                 Principal principal) {
+        AppUser user = accountService.requireByEmail(principal.getName());
+        favoriteFoodService.toggle(user, foodKey);
+        return "redirect:/diary?date=" + date;
+    }
+
     @PostMapping("/diary/{id}/delete")
     public String deleteFood(@PathVariable Long id,
                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -116,6 +137,9 @@ public class FoodDiaryController {
         model.addAttribute("selectedDate", date);
         model.addAttribute("entries", entries);
         model.addAttribute("summary", diaryService.summarize(user, date, entries));
+        model.addAttribute("mealSummaries", diaryService.mealSummaries(entries));
+        model.addAttribute("recentFoodNames", diaryService.recentFoodNames(user));
+        model.addAttribute("favoriteFoodKeys", favoriteFoodService.keysFor(user));
         model.addAttribute("customFoods", customFoodService.list(user));
         model.addAttribute("commonFoods", commonFoodCatalog.list());
         if (!model.containsAttribute("customFood")) {

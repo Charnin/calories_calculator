@@ -26,6 +26,13 @@
         <article><small th:text="#{diary.carbs}"></small><strong><span th:text="${summary.remainingCarbohydrate}"></span> g</strong><p><span th:text="${summary.consumedCarbohydrate}"></span> / <span th:text="${summary.carbohydrateTarget}"></span> g</p></article>
         <article><small th:text="#{diary.fat}"></small><strong><span th:text="${summary.remainingFat}"></span> g</strong><p><span th:text="${summary.consumedFat}"></span> / <span th:text="${summary.fatTarget}"></span> g</p></article>
     </section>
+    <section class="meal-overview">
+        <article th:each="meal : ${mealSummaries}">
+            <span class="meal-label" th:switch="${meal.mealType}"><i th:case="'breakfast'" th:text="#{meal.breakfast}"></i><i th:case="'lunch'" th:text="#{meal.lunch}"></i><i th:case="'dinner'" th:text="#{meal.dinner}"></i><i th:case="*" th:text="#{meal.snack}"></i></span>
+            <b><span th:text="${meal.calories}">0</span> kcal</b>
+            <small>P <span th:text="${meal.protein}">0</span> · C <span th:text="${meal.carbohydrate}">0</span> · F <span th:text="${meal.fat}">0</span> g</small>
+        </article>
+    </section>
 
     <section class="card copy-meal-card">
         <div class="section-heading"><span>↻</span><div><h2 th:text="#{diary.copyMeal}"></h2><p th:text="#{diary.copyHelp}"></p></div></div>
@@ -45,6 +52,7 @@
                 <h2 th:if="${repeatingEntry != null}" th:text="#{diary.repeatTitle}"></h2>
                 <p th:text="#{diary.formHelp}"></p>
             </div></div>
+            <label><span th:text="#{diary.meal}"></span><select th:field="*{mealType}"><option value="breakfast" th:text="#{meal.breakfast}"></option><option value="lunch" th:text="#{meal.lunch}"></option><option value="dinner" th:text="#{meal.dinner}"></option><option value="snack" th:text="#{meal.snack}"></option></select><em th:errors="*{mealType}"></em></label>
             <div class="saved-food-picker">
                 <label for="saved-food-search" th:text="#{diary.savedFood}"></label>
                 <div class="food-combobox">
@@ -54,26 +62,36 @@
                 <select id="saved-food-select" th:disabled="${commonFoods.isEmpty() and customFoods.isEmpty()}">
                     <option value="" th:text="${commonFoods.isEmpty() and customFoods.isEmpty()} ? #{diary.noSavedFood} : #{diary.chooseSavedFood}"></option>
                     <optgroup th:unless="${commonFoods.isEmpty()}" th:label="#{diary.commonFoods}">
-                        <option th:each="food : ${commonFoods}" th:value="${'common-' + food.id}" th:text="${#locale.language == 'en' ? food.nameEn : food.nameTh}" th:attr="data-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-entry-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-brand=${food.category},data-unit=${food.baseUnit},data-serving-size=${food.servingSize},data-serving-label=${#locale.language == 'en' ? food.servingLabelEn : food.servingLabelTh},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
+                        <option th:each="food : ${commonFoods}" th:value="${'common-' + food.id}" th:text="${#locale.language == 'en' ? food.nameEn : food.nameTh}" th:attr="data-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-entry-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-aliases=${food.nameTh + ' ' + food.nameEn},data-brand=${food.category},data-food-key=${'common-' + food.foodCode},data-favorite=${favoriteFoodKeys.contains('common-' + food.foodCode)},data-recent=${recentFoodNames.contains(#locale.language == 'en' ? food.nameEn : food.nameTh)},data-source-type=${food.estimated ? 'estimate' : 'reference'},data-source-label=${food.estimated ? #messages.msg('diary.sourceEstimate') : #messages.msg('diary.sourceReference')},data-source-name=${food.sourceName},data-source-url=${food.sourceUrl},data-unit=${food.baseUnit},data-serving-size=${food.servingSize},data-serving-label=${#locale.language == 'en' ? food.servingLabelEn : food.servingLabelTh},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
                     </optgroup>
                     <optgroup th:unless="${customFoods.isEmpty()}" th:label="#{diary.myFoods}">
-                        <option th:each="food : ${customFoods}" th:value="${'custom-' + food.id}" th:text="${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)}" th:attr="data-name=${food.name},data-entry-name=${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)},data-brand=${food.brand},data-unit=${food.baseUnit},data-serving-size=100,data-serving-label=${food.baseUnit == 'ml' ? '100 ml' : '100 g'},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
+                        <option th:each="food : ${customFoods}" th:value="${'custom-' + food.id}" th:text="${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)}" th:attr="data-name=${food.name},data-entry-name=${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)},data-aliases=${food.name + ' ' + food.brand},data-brand=${food.brand},data-food-key=${'custom-' + food.id},data-favorite=${favoriteFoodKeys.contains('custom-' + food.id)},data-recent=${recentFoodNames.contains(food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand))},data-source-type=custom,data-source-label=#{diary.sourceMine},data-source-name=#{diary.sourceMine},data-source-url='',data-unit=${food.baseUnit},data-serving-size=100,data-serving-label=${food.baseUnit == 'ml' ? '100 ml' : '100 g'},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
                     </optgroup>
                 </select>
                 <p id="saved-food-note" th:text="#{diary.savedFoodNote}"></p>
+                <article id="selected-food-card" class="selected-food-card" hidden>
+                    <div class="selected-food-top"><span id="selected-source-badge" class="food-source-badge"></span><button id="favorite-food-button" class="favorite-food-button" type="button" th:aria-label="#{diary.favorite}">☆</button></div>
+                    <h3 id="selected-food-name"></h3>
+                    <div class="selected-food-stats"><b><span id="selected-calories">0</span> kcal</b><span>P <b id="selected-protein">0</b> g</span><span>C <b id="selected-carbs">0</b> g</span><span>F <b id="selected-fat">0</b> g</span></div>
+                    <label class="portion-picker"><span th:text="#{diary.portion}"></span><select id="portion-multiplier"><option value="0.5" th:text="#{diary.halfPortion}"></option><option value="1" selected th:text="#{diary.onePortion}"></option><option value="1.5" th:text="#{diary.oneHalfPortion}"></option><option value="2" th:text="#{diary.twoPortions}"></option></select><small id="selected-serving-label"></small></label>
+                    <div id="selected-food-details" class="selected-food-details" hidden><b th:text="#{diary.per100Details}"></b><p id="selected-per100"></p><a id="selected-source-link" target="_blank" rel="noopener"></a></div>
+                    <div class="quick-add-actions"><button class="quick-add-button" type="submit" th:text="#{diary.quickAdd}"></button><button id="show-food-details" class="secondary-button detail-toggle" type="button" th:text="#{diary.showDetails}"></button></div>
+                </article>
             </div>
             <input type="hidden" th:field="*{logDate}">
-            <label><span th:text="#{diary.meal}"></span><select th:field="*{mealType}"><option value="breakfast" th:text="#{meal.breakfast}"></option><option value="lunch" th:text="#{meal.lunch}"></option><option value="dinner" th:text="#{meal.dinner}"></option><option value="snack" th:text="#{meal.snack}"></option></select><em th:errors="*{mealType}"></em></label>
-            <label class="full-field"><span th:text="#{diary.foodName}"></span><input type="text" th:field="*{foodName}"><em th:errors="*{foodName}"></em></label>
-            <div class="serving-row">
+            <input type="hidden" th:field="*{servingDescription}"><input type="hidden" th:field="*{dataSource}"><input type="hidden" th:field="*{externalFoodId}">
+            <div id="manual-food-fields" class="manual-food-fields">
+                <label class="full-field"><span th:text="#{diary.foodName}"></span><input type="text" th:field="*{foodName}"><em th:errors="*{foodName}"></em></label>
+                <div class="serving-row">
                 <label><span th:text="#{diary.quantity}"></span><input type="number" step="0.01" min="0.01" th:field="*{servingQuantity}"><em th:errors="*{servingQuantity}"></em></label>
                 <label><span th:text="#{diary.servingUnit}"></span><select th:field="*{servingUnit}"><option value="g" th:text="#{unit.gram}"></option><option value="ml" th:text="#{unit.ml}"></option></select><em th:errors="*{servingUnit}"></em></label>
-            </div>
-            <div class="nutrition-inputs">
+                </div>
+                <div class="nutrition-inputs">
                 <label><span th:text="#{diary.calories}"></span> <small>kcal</small><input type="number" step="0.1" th:field="*{calories}"><em th:errors="*{calories}"></em></label>
                 <label><span th:text="#{diary.protein}"></span> <small>g</small><input type="number" step="0.1" th:field="*{proteinGrams}"><em th:errors="*{proteinGrams}"></em></label>
                 <label><span th:text="#{diary.carbs}"></span> <small>g</small><input type="number" step="0.1" th:field="*{carbohydrateGrams}"><em th:errors="*{carbohydrateGrams}"></em></label>
                 <label><span th:text="#{diary.fat}"></span> <small>g</small><input type="number" step="0.1" th:field="*{fatGrams}"><em th:errors="*{fatGrams}"></em></label>
+                </div>
             </div>
             <button type="submit"><span class="button-label" th:text="${editingEntryId == null} ? #{diary.saveEntry} : #{diary.saveEdit}"></span><span>→</span></button>
             <a class="cancel-edit" th:if="${editingEntryId != null}" th:href="@{/diary(date=${selectedDate})}" th:text="#{diary.cancelEdit}"></a>
@@ -83,11 +101,12 @@
             <div class="section-heading"><span>✓</span><div><h2 th:text="#{diary.entries}"></h2><p th:text="${#temporals.format(selectedDate, 'dd/MM/yyyy')}"></p></div></div>
             <p class="history-empty" th:if="${entries.isEmpty()}" th:text="#{diary.noEntries}"></p>
             <div class="food-entry" th:each="entry : ${entries}">
-                <div class="food-entry-main"><span class="meal-label" th:switch="${entry.mealType}"><i th:case="'breakfast'" th:text="#{meal.breakfast}"></i><i th:case="'lunch'" th:text="#{meal.lunch}"></i><i th:case="'dinner'" th:text="#{meal.dinner}"></i><i th:case="*" th:text="#{meal.snack}"></i></span><h3 th:text="${entry.foodName}"></h3><small><span th:text="${#numbers.formatDecimal(entry.servingQuantity, 0, 2)}"></span> <span th:text="${entry.servingUnit == 'ml' ? #messages.msg('unit.ml') : #messages.msg('unit.gram')}"></span></small></div>
+                <div class="food-entry-main"><span class="meal-label" th:switch="${entry.mealType}"><i th:case="'breakfast'" th:text="#{meal.breakfast}"></i><i th:case="'lunch'" th:text="#{meal.lunch}"></i><i th:case="'dinner'" th:text="#{meal.dinner}"></i><i th:case="*" th:text="#{meal.snack}"></i></span><span class="food-origin" th:classappend="${entry.dataSource}" th:text="${entry.dataSource == 'reference'} ? #{diary.sourceReference} : (${entry.dataSource == 'estimate'} ? #{diary.sourceEstimate} : (${entry.dataSource == 'custom'} ? #{diary.sourceMine} : #{diary.sourceManual}))"></span><h3 th:text="${entry.foodName}"></h3><small><span th:text="${#numbers.formatDecimal(entry.servingQuantity, 0, 2)}"></span> <span th:text="${entry.servingUnit == 'ml' ? #messages.msg('unit.ml') : #messages.msg('unit.gram')}"></span><span th:if="${entry.servingDescription != null}" th:text="${' · ' + entry.servingDescription}"></span></small></div>
                 <div class="food-nutrients"><b><span th:text="${#numbers.formatDecimal(entry.calories, 0, 0)}"></span> kcal</b><small>P <span th:text="${#numbers.formatDecimal(entry.proteinGrams, 0, 1)}"></span> · C <span th:text="${#numbers.formatDecimal(entry.carbohydrateGrams, 0, 1)}"></span> · F <span th:text="${#numbers.formatDecimal(entry.fatGrams, 0, 1)}"></span></small></div>
-                <div class="entry-actions"><a class="secondary-button" th:href="@{/diary/{id}/repeat(id=${entry.id},date=${selectedDate})}" th:text="#{diary.repeat}"></a><a class="edit-button" th:href="@{/diary/{id}/edit(id=${entry.id})}" th:text="#{common.edit}"></a><form th:action="@{/diary/{id}/delete(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><button class="delete-button" type="submit" th:aria-label="#{common.delete}">×</button></form></div>
+                <div class="entry-actions"><form th:action="@{/diary/{id}/scale(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><input type="hidden" name="multiplier" value="0.5"><button class="portion-adjust" type="submit" th:aria-label="#{diary.lessPortion}">−</button></form><form th:action="@{/diary/{id}/scale(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><input type="hidden" name="multiplier" value="1.5"><button class="portion-adjust" type="submit" th:aria-label="#{diary.morePortion}">+</button></form><a class="secondary-button" th:href="@{/diary/{id}/repeat(id=${entry.id},date=${selectedDate})}" th:text="#{diary.repeat}"></a><a class="edit-button" th:href="@{/diary/{id}/edit(id=${entry.id})}" th:text="#{common.edit}"></a><form th:action="@{/diary/{id}/delete(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><button class="delete-button" type="submit" th:aria-label="#{common.delete}">×</button></form></div>
             </div>
         </section>
+        <form id="favorite-toggle-form" th:action="@{/foods/favorites/toggle}" method="post" hidden><input type="hidden" name="foodKey"><input type="hidden" name="date" th:value="${selectedDate}"></form>
     </section>
 
     <section id="custom-foods" class="card custom-food-card">
@@ -132,20 +151,31 @@
     const savedFoodSearch = document.getElementById('saved-food-search');
     const savedFoodNote = document.getElementById('saved-food-note');
     const foodSuggestions = document.getElementById('food-suggestions');
+    const selectedFoodCard = document.getElementById('selected-food-card');
+    const portionMultiplier = document.getElementById('portion-multiplier');
+    const manualFoodFields = document.getElementById('manual-food-fields');
+    const selectedFoodDetails = document.getElementById('selected-food-details');
+    const favoriteFoodButton = document.getElementById('favorite-food-button');
+    const favoriteToggleForm = document.getElementById('favorite-toggle-form');
     const originalOptions = Array.from(savedFoodSelect.options).slice(1);
     const field = name => document.querySelector(`[name="${name}"]`);
     let selectedFood = null;
     let activeSuggestion = -1;
 
     const normalized = value => value.toLocaleLowerCase().replace(/\s+/g, ' ').trim();
+    const relatedSearches = { 'กระเพรา':'กะเพรา', 'ชาเย็น':'ชาไทยเย็น', 'ไข่ทอด':'ไข่ดาว ไข่เจียว', 'หมูย่าง':'คอหมูย่าง', 'ข้าวมัน':'ข้าวมันไก่' };
+    const queryVariants = query => [query, relatedSearches[query], query.replaceAll('กระเพรา','กะเพรา')].filter(Boolean);
     const matchScore = (option, query) => {
         const name = normalized(option.dataset.name || '');
-        const extra = normalized(option.dataset.brand || '');
-        if (name.startsWith(query)) return 0;
-        if (name.split(' ').some(word => word.startsWith(query))) return 1;
-        if (name.includes(query)) return 2;
-        if (extra.includes(query)) return 3;
-        return 99;
+        const extra = normalized(`${option.dataset.brand || ''} ${option.dataset.aliases || ''}`);
+        return Math.min(...queryVariants(query).map(variant => {
+            if (name.startsWith(variant)) return 0;
+            if (name.split(' ').some(word => word.startsWith(variant))) return 1;
+            if (name.includes(variant)) return 2;
+            if (variant.split(' ').some(word => name.includes(word))) return 3;
+            if (extra.includes(variant)) return 4;
+            return 99;
+        }));
     };
     const closeSuggestions = () => {
         foodSuggestions.hidden = true;
@@ -161,9 +191,8 @@
     };
     const showSuggestions = () => {
         const query = normalized(savedFoodSearch.value);
-        if (!query) { closeSuggestions(); return; }
         const matches = originalOptions
-            .map((option, order) => ({ option, order, score:matchScore(option, query) }))
+            .map((option, order) => ({ option, order, score:query ? matchScore(option, query) : (option.dataset.favorite === 'true' ? 0 : option.dataset.recent === 'true' ? 1 : 99) }))
             .filter(match => match.score < 99)
             .sort((a, b) => a.score - b.score || a.order - b.order)
             .slice(0, 8);
@@ -173,7 +202,8 @@
             item.className = 'food-suggestion';
             item.setAttribute('role', 'option');
             const factor = Number(option.dataset.servingSize || 100) / 100;
-            item.innerHTML = `<span>${escapeHtml(option.dataset.name)}</span><small>${escapeHtml(option.dataset.servingLabel)} · ${round(Number(option.dataset.calories) * factor)} kcal</small><small>P ${round(Number(option.dataset.protein) * factor)} · C ${round(Number(option.dataset.carbs) * factor)} · F ${round(Number(option.dataset.fat) * factor)} g</small>`;
+            const marker = option.dataset.favorite === 'true' ? '★' : option.dataset.recent === 'true' ? '↻' : '';
+            item.innerHTML = `<span>${escapeHtml(option.dataset.name)} <i>${marker}</i></span><small><em class="food-source-badge ${escapeHtml(option.dataset.sourceType)}">${escapeHtml(option.dataset.sourceLabel)}</em>${escapeHtml(option.dataset.servingLabel)} · ${round(Number(option.dataset.calories) * factor)} kcal</small><small>P ${round(Number(option.dataset.protein) * factor)} · C ${round(Number(option.dataset.carbs) * factor)} · F ${round(Number(option.dataset.fat) * factor)} g</small>`;
             item.addEventListener('mousedown', event => { event.preventDefault(); chooseFood(option); });
             return item;
         }));
@@ -182,7 +212,7 @@
         savedFoodSearch.setAttribute('aria-expanded', String(hasMatches));
         activeSuggestion = -1;
     };
-    savedFoodSearch?.addEventListener('input', () => { selectedFood = null; savedFoodSelect.value = ''; showSuggestions(); });
+    savedFoodSearch?.addEventListener('input', () => { selectedFood = null; savedFoodSelect.value = ''; selectedFoodCard.hidden = true; manualFoodFields.hidden = false; showSuggestions(); });
     savedFoodSearch?.addEventListener('focus', showSuggestions);
     savedFoodSearch?.addEventListener('blur', () => setTimeout(closeSuggestions, 100));
     savedFoodSearch?.addEventListener('keydown', event => {
@@ -197,13 +227,63 @@
     });
     savedFoodSelect.addEventListener('change', () => {
         const option = savedFoodSelect.selectedOptions[0];
-        if (!option?.value) { selectedFood = null; return; }
-        selectedFood = { unit:option.dataset.unit, servingSize:Number(option.dataset.servingSize || 100), servingLabel:option.dataset.servingLabel, calories:Number(option.dataset.calories), protein:Number(option.dataset.protein), carbs:Number(option.dataset.carbs), fat:Number(option.dataset.fat) };
+        if (!option?.value) { selectedFood = null; selectedFoodCard.hidden = true; manualFoodFields.hidden = false; return; }
+        selectedFood = { option, unit:option.dataset.unit, servingSize:Number(option.dataset.servingSize || 100), servingLabel:option.dataset.servingLabel, calories:Number(option.dataset.calories), protein:Number(option.dataset.protein), carbs:Number(option.dataset.carbs), fat:Number(option.dataset.fat) };
         field('foodName').value = option.dataset.entryName;
         field('servingQuantity').value = selectedFood.servingSize;
         field('servingUnit').value = selectedFood.unit;
+        field('servingDescription').value = selectedFood.servingLabel;
+        field('dataSource').value = option.dataset.sourceType;
+        field('externalFoodId').value = option.dataset.foodKey;
+        portionMultiplier.value = '1';
         updateNutrition(selectedFood.servingSize / 100);
         savedFoodNote.textContent = isEnglish ? `Filled for ${selectedFood.servingLabel}. Change the amount to recalculate automatically.` : `ใส่ข้อมูลสำหรับ ${selectedFood.servingLabel} แล้ว เปลี่ยนจำนวนเพื่อคำนวณสารอาหารอัตโนมัติได้`;
+        renderSelectedFood(option);
+    });
+    function renderSelectedFood(option) {
+        selectedFoodCard.hidden = false;
+        manualFoodFields.hidden = true;
+        document.getElementById('selected-food-name').textContent = option.dataset.name;
+        document.getElementById('selected-serving-label').textContent = option.dataset.servingLabel;
+        const badge = document.getElementById('selected-source-badge');
+        badge.textContent = option.dataset.sourceLabel;
+        badge.className = `food-source-badge ${option.dataset.sourceType}`;
+        favoriteFoodButton.textContent = option.dataset.favorite === 'true' ? '★' : '☆';
+        favoriteFoodButton.classList.toggle('active', option.dataset.favorite === 'true');
+        document.getElementById('selected-per100').textContent = `${round(Number(option.dataset.calories))} kcal · P ${round(Number(option.dataset.protein))} · C ${round(Number(option.dataset.carbs))} · F ${round(Number(option.dataset.fat))} g / 100 ${option.dataset.unit}`;
+        const sourceLink = document.getElementById('selected-source-link');
+        sourceLink.textContent = option.dataset.sourceName || '';
+        sourceLink.href = option.dataset.sourceUrl || '#';
+        sourceLink.hidden = !option.dataset.sourceUrl;
+        updateSelectedStats();
+    }
+    function updateSelectedStats() {
+        if (!selectedFood) return;
+        const factor = (selectedFood.servingSize * Number(portionMultiplier.value)) / 100;
+        document.getElementById('selected-calories').textContent = round(selectedFood.calories * factor);
+        document.getElementById('selected-protein').textContent = round(selectedFood.protein * factor);
+        document.getElementById('selected-carbs').textContent = round(selectedFood.carbs * factor);
+        document.getElementById('selected-fat').textContent = round(selectedFood.fat * factor);
+        field('servingQuantity').value = round(selectedFood.servingSize * Number(portionMultiplier.value));
+        field('servingDescription').value = `${portionMultiplier.value} × ${selectedFood.servingLabel}`;
+        updateNutrition(factor);
+    }
+    portionMultiplier.addEventListener('change', updateSelectedStats);
+    document.getElementById('show-food-details').addEventListener('click', event => {
+        manualFoodFields.hidden = !manualFoodFields.hidden;
+        selectedFoodDetails.hidden = manualFoodFields.hidden;
+        event.currentTarget.textContent = manualFoodFields.hidden ? (isEnglish ? 'Edit details' : 'แก้รายละเอียด') : (isEnglish ? 'Hide details' : 'ซ่อนรายละเอียด');
+    });
+    favoriteFoodButton.addEventListener('click', async () => {
+        if (!selectedFood) return;
+        favoriteToggleForm.elements.foodKey.value = selectedFood.option.dataset.foodKey;
+        const response = await fetch(favoriteToggleForm.action, { method:'POST', body:new FormData(favoriteToggleForm), headers:{'X-Requested-With':'XMLHttpRequest'} });
+        if (response.ok) {
+            const isFavorite = selectedFood.option.dataset.favorite !== 'true';
+            selectedFood.option.dataset.favorite = String(isFavorite);
+            favoriteFoodButton.textContent = isFavorite ? '★' : '☆';
+            favoriteFoodButton.classList.toggle('active', isFavorite);
+        }
     });
     field('servingQuantity').addEventListener('input', updateFromQuantity);
     field('servingUnit').addEventListener('change', () => {

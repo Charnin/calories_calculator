@@ -13,7 +13,7 @@ class CommonFoodCatalogTest {
 
     @Test
     void seedsTheCuratedThaiFoodCatalog() {
-        assertThat(repository.count()).isEqualTo(94);
+        assertThat(repository.count()).isEqualTo(96);
         assertThat(repository.findByFoodCode("THT54"))
                 .get()
                 .satisfies(food -> {

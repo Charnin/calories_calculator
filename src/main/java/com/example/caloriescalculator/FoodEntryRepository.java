@@ -12,4 +12,5 @@ public interface FoodEntryRepository extends JpaRepository<FoodEntry, Long> {
     List<FoodEntry> findByUserAndLogDateBetweenOrderByLogDateAscCreatedAtAsc(
             AppUser user, LocalDate startDate, LocalDate endDate);
     Optional<FoodEntry> findByIdAndUser(Long id, AppUser user);
+    List<FoodEntry> findTop30ByUserOrderByCreatedAtDesc(AppUser user);
 }

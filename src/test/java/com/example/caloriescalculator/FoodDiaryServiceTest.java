@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -59,6 +60,28 @@ class FoodDiaryServiceTest {
                 .singleElement()
                 .satisfies(entry -> assertThat(entry.getFoodName()).isEqualTo("ไข่"));
         assertThat(diaryService.entriesFor(other, targetDate)).isEmpty();
+    }
+
+    @Test
+    void adjustsAPortionAndSummarizesMeals() {
+        AppUser owner = userRepository.save(new AppUser("Portion Owner", "portion-owner@example.com", "hash"));
+        FoodEntryForm breakfast = food("ไข่", 100, 150);
+        breakfast.setMealType("breakfast");
+        diaryService.add(owner, breakfast);
+        FoodEntry entry = diaryService.entriesFor(owner, LocalDate.now()).getFirst();
+
+        diaryService.scale(owner, entry.getId(), 1.5);
+
+        FoodEntry adjusted = diaryService.entriesFor(owner, LocalDate.now()).getFirst();
+        assertThat(adjusted.getServingQuantity()).isEqualTo(150);
+        assertThat(adjusted.getCalories()).isEqualTo(225);
+        assertThat(diaryService.mealSummaries(List.of(adjusted)))
+                .first()
+                .satisfies(meal -> {
+                    assertThat(meal.mealType()).isEqualTo("breakfast");
+                    assertThat(meal.calories()).isEqualTo(225);
+                    assertThat(meal.protein()).isEqualTo(15);
+                });
     }
 
     private FoodEntryForm food(String name, double quantity, double calories) {

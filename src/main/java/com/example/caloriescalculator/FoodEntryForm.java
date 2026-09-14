@@ -27,6 +27,9 @@ public class FoodEntryForm {
     @NotBlank(message = "{validation.unit.required}")
     @Pattern(regexp = "^(g|ml)$", message = "{validation.unit.invalid}")
     private String servingUnit = "g";
+    private String servingDescription;
+    private String dataSource = "manual";
+    private String externalFoodId;
 
     @NotNull(message = "{validation.calories.required}")
     @DecimalMin(value = "0.0", message = "{validation.calories.nonnegative}")
@@ -54,6 +57,12 @@ public class FoodEntryForm {
     public void setServingQuantity(Double servingQuantity) { this.servingQuantity = servingQuantity; }
     public String getServingUnit() { return servingUnit; }
     public void setServingUnit(String servingUnit) { this.servingUnit = servingUnit; }
+    public String getServingDescription() { return servingDescription; }
+    public void setServingDescription(String servingDescription) { this.servingDescription = servingDescription; }
+    public String getDataSource() { return dataSource; }
+    public void setDataSource(String dataSource) { this.dataSource = dataSource; }
+    public String getExternalFoodId() { return externalFoodId; }
+    public void setExternalFoodId(String externalFoodId) { this.externalFoodId = externalFoodId; }
     public Double getCalories() { return calories; }
     public void setCalories(Double calories) { this.calories = calories; }
     public Double getProteinGrams() { return proteinGrams; }
@@ -70,6 +79,9 @@ public class FoodEntryForm {
         form.setFoodName(entry.getFoodName());
         form.setServingQuantity(entry.getServingQuantity());
         form.setServingUnit("ml".equals(entry.getServingUnit()) ? "ml" : "g");
+        form.setServingDescription(entry.getServingDescription());
+        form.setDataSource(entry.getDataSource());
+        form.setExternalFoodId(entry.getExternalFoodId());
         form.setCalories(entry.getCalories());
         form.setProteinGrams(entry.getProteinGrams());
         form.setCarbohydrateGrams(entry.getCarbohydrateGrams());
