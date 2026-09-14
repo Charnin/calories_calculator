@@ -99,11 +99,11 @@ public class FoodDiaryController {
     }
 
     @PostMapping("/diary/{id}/scale")
-    public String scaleFood(@PathVariable Long id, @RequestParam double multiplier,
+    public String scaleFood(@PathVariable Long id, @RequestParam double delta,
                             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                             Principal principal) {
         AppUser user = accountService.requireByEmail(principal.getName());
-        diaryService.scale(user, id, multiplier);
+        diaryService.adjustPortions(user, id, delta);
         return "redirect:/diary?date=" + date + "&updated";
     }
 
@@ -125,15 +125,6 @@ public class FoodDiaryController {
         return "redirect:/diary?date=" + date + "&deleted";
     }
 
-    @PostMapping("/diary/copy-meal")
-    public String copyMeal(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate sourceDate,
-                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate targetDate,
-                           @RequestParam String mealType, Principal principal) {
-        AppUser user = accountService.requireByEmail(principal.getName());
-        int copied = diaryService.copyMeal(user, sourceDate, targetDate, mealType);
-        return "redirect:/diary?date=" + targetDate + (copied == 0 ? "&nothingToCopy" : "&copied=" + copied);
-    }
-
     private void addDiaryModel(Model model, Principal principal, LocalDate date) {
         AppUser user = accountService.requireByEmail(principal.getName());
         List<FoodEntry> entries = diaryService.entriesFor(user, date);
@@ -141,8 +132,6 @@ public class FoodDiaryController {
         model.addAttribute("selectedDate", date);
         model.addAttribute("entries", entries);
         model.addAttribute("summary", diaryService.summarize(user, date, entries));
-        model.addAttribute("mealSummaries", diaryService.mealSummaries(entries));
-        model.addAttribute("entriesByMeal", diaryService.entriesByMeal(entries));
         model.addAttribute("recentFoodNames", diaryService.recentFoodNames(user));
         model.addAttribute("favoriteFoodKeys", favoriteFoodService.keysFor(user));
         model.addAttribute("customFoods", customFoodService.list(user));

@@ -14,7 +14,7 @@ public class FoodEntryForm {
     private LocalDate logDate = LocalDate.now();
 
     @NotBlank(message = "{validation.meal.required}")
-    private String mealType = "breakfast";
+    private String mealType = "meal";
 
     @NotBlank(message = "{validation.food.required}")
     @Size(max = 160, message = "{validation.food.size}")
@@ -30,6 +30,9 @@ public class FoodEntryForm {
     private String servingDescription;
     private String dataSource = "manual";
     private String externalFoodId;
+    private Double portionCount;
+    private Double baseServingQuantity;
+    private String baseServingLabel;
 
     @NotNull(message = "{validation.calories.required}")
     @DecimalMin(value = "0.0", message = "{validation.calories.nonnegative}")
@@ -63,6 +66,12 @@ public class FoodEntryForm {
     public void setDataSource(String dataSource) { this.dataSource = dataSource; }
     public String getExternalFoodId() { return externalFoodId; }
     public void setExternalFoodId(String externalFoodId) { this.externalFoodId = externalFoodId; }
+    public Double getPortionCount() { return portionCount; }
+    public void setPortionCount(Double portionCount) { this.portionCount = portionCount; }
+    public Double getBaseServingQuantity() { return baseServingQuantity; }
+    public void setBaseServingQuantity(Double baseServingQuantity) { this.baseServingQuantity = baseServingQuantity; }
+    public String getBaseServingLabel() { return baseServingLabel; }
+    public void setBaseServingLabel(String baseServingLabel) { this.baseServingLabel = baseServingLabel; }
     public Double getCalories() { return calories; }
     public void setCalories(Double calories) { this.calories = calories; }
     public Double getProteinGrams() { return proteinGrams; }
@@ -82,6 +91,9 @@ public class FoodEntryForm {
         form.setServingDescription(entry.getServingDescription());
         form.setDataSource(entry.getDataSource());
         form.setExternalFoodId(entry.getExternalFoodId());
+        form.setPortionCount(entry.getPortionCount());
+        form.setBaseServingQuantity(entry.getBaseServingQuantity());
+        form.setBaseServingLabel(entry.getBaseServingLabel());
         form.setCalories(entry.getCalories());
         form.setProteinGrams(entry.getProteinGrams());
         form.setCarbohydrateGrams(entry.getCarbohydrateGrams());

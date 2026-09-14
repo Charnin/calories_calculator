@@ -30,6 +30,9 @@ public class FoodEntry {
     private String servingDescription;
     private String dataSource;
     private String externalFoodId;
+    private Double portionCount;
+    private Double baseServingQuantity;
+    private String baseServingLabel;
     private Double calories;
     private Double proteinGrams;
     private Double carbohydrateGrams;
@@ -56,38 +59,29 @@ public class FoodEntry {
             default -> "manual";
         };
         this.externalFoodId = clean(form.getExternalFoodId(), 80);
+        this.portionCount = form.getPortionCount();
+        this.baseServingQuantity = form.getBaseServingQuantity();
+        this.baseServingLabel = clean(form.getBaseServingLabel(), 80);
         this.calories = form.getCalories();
         this.proteinGrams = form.getProteinGrams();
         this.carbohydrateGrams = form.getCarbohydrateGrams();
         this.fatGrams = form.getFatGrams();
     }
 
-    public FoodEntry copyFor(AppUser owner, LocalDate date) {
-        FoodEntry copy = new FoodEntry();
-        copy.user = owner;
-        copy.logDate = date;
-        copy.mealType = mealType;
-        copy.foodName = foodName;
-        copy.servingQuantity = servingQuantity;
-        copy.servingUnit = servingUnit;
-        copy.servingDescription = servingDescription;
-        copy.dataSource = dataSource;
-        copy.externalFoodId = externalFoodId;
-        copy.calories = calories;
-        copy.proteinGrams = proteinGrams;
-        copy.carbohydrateGrams = carbohydrateGrams;
-        copy.fatGrams = fatGrams;
-        copy.createdAt = Instant.now();
-        return copy;
-    }
-
-    public void scaleBy(double multiplier) {
-        if (multiplier <= 0) throw new IllegalArgumentException("Multiplier must be positive");
-        this.servingQuantity = round(this.getServingQuantity() * multiplier);
-        this.calories = round(this.calories * multiplier);
-        this.proteinGrams = round(this.proteinGrams * multiplier);
-        this.carbohydrateGrams = round(this.carbohydrateGrams * multiplier);
-        this.fatGrams = round(this.fatGrams * multiplier);
+    public void adjustPortions(double delta) {
+        double currentCount = portionCount == null || portionCount <= 0 ? 1.0 : portionCount;
+        double newCount = delta < 0 && currentCount <= 1.0 ? currentCount : currentCount + delta;
+        double factor = newCount / currentCount;
+        if (baseServingQuantity == null || baseServingQuantity <= 0) {
+            baseServingQuantity = getServingQuantity() / currentCount;
+        }
+        this.servingQuantity = round(this.getServingQuantity() * factor);
+        this.calories = round(this.calories * factor);
+        this.proteinGrams = round(this.proteinGrams * factor);
+        this.carbohydrateGrams = round(this.carbohydrateGrams * factor);
+        this.fatGrams = round(this.fatGrams * factor);
+        this.portionCount = newCount;
+        if (baseServingLabel != null) this.servingDescription = formatCount(newCount) + " × " + baseServingLabel;
     }
 
     private double round(double value) { return Math.round(value * 100.0) / 100.0; }
@@ -96,6 +90,7 @@ public class FoodEntry {
         String cleaned = value.trim();
         return cleaned.substring(0, Math.min(cleaned.length(), limit));
     }
+    private String formatCount(double value) { return value == Math.rint(value) ? String.valueOf((long) value) : String.valueOf(value); }
 
     public Long getId() { return id; }
     public LocalDate getLogDate() { return logDate; }
@@ -116,6 +111,10 @@ public class FoodEntry {
     }
     public String getDataSource() { return dataSource; }
     public String getExternalFoodId() { return externalFoodId; }
+    public Double getPortionCount() { return portionCount == null ? 1.0 : portionCount; }
+    public String getPortionCountLabel() { return formatCount(getPortionCount()); }
+    public Double getBaseServingQuantity() { return baseServingQuantity; }
+    public String getBaseServingLabel() { return baseServingLabel; }
     public Double getCalories() { return calories; }
     public Double getProteinGrams() { return proteinGrams; }
     public Double getCarbohydrateGrams() { return carbohydrateGrams; }

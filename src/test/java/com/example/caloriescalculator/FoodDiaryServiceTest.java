@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,53 +34,37 @@ class FoodDiaryServiceTest {
     }
 
     @Test
-    void copiesOnlyTheSelectedMealOwnedByTheUser() {
-        AppUser owner = userRepository.save(new AppUser("Copy Owner", "copy-owner@example.com", "hash"));
-        AppUser other = userRepository.save(new AppUser("Copy Other", "copy-other@example.com", "hash"));
-        LocalDate sourceDate = LocalDate.now().minusDays(1);
-        LocalDate targetDate = LocalDate.now();
-        FoodEntryForm breakfast = food("ไข่", 100, 150);
-        breakfast.setLogDate(sourceDate);
-        breakfast.setMealType("breakfast");
-        FoodEntryForm lunch = food("ข้าว", 100, 200);
-        lunch.setLogDate(sourceDate);
-        lunch.setMealType("lunch");
-        FoodEntryForm otherBreakfast = food("อาหารของคนอื่น", 100, 300);
-        otherBreakfast.setLogDate(sourceDate);
-        otherBreakfast.setMealType("breakfast");
-        diaryService.add(owner, breakfast);
-        diaryService.add(owner, lunch);
-        diaryService.add(other, otherBreakfast);
-
-        int copied = diaryService.copyMeal(owner, sourceDate, targetDate, "breakfast");
-
-        assertThat(copied).isEqualTo(1);
-        assertThat(diaryService.entriesFor(owner, targetDate))
-                .singleElement()
-                .satisfies(entry -> assertThat(entry.getFoodName()).isEqualTo("ไข่"));
-        assertThat(diaryService.entriesFor(other, targetDate)).isEmpty();
-    }
-
-    @Test
-    void adjustsAPortionAndSummarizesMeals() {
+    void adjustsPortionsOneServingAtATime() {
         AppUser owner = userRepository.save(new AppUser("Portion Owner", "portion-owner@example.com", "hash"));
-        FoodEntryForm breakfast = food("ไข่", 100, 150);
-        breakfast.setMealType("breakfast");
-        diaryService.add(owner, breakfast);
+        FoodEntryForm food = food("ไข่", 100, 150);
+        food.setPortionCount(1.0);
+        food.setBaseServingQuantity(100.0);
+        food.setBaseServingLabel("1 จาน");
+        diaryService.add(owner, food);
         FoodEntry entry = diaryService.entriesFor(owner, LocalDate.now()).getFirst();
 
-        diaryService.scale(owner, entry.getId(), 1.5);
+        diaryService.adjustPortions(owner, entry.getId(), 1);
+        diaryService.adjustPortions(owner, entry.getId(), 1);
 
         FoodEntry adjusted = diaryService.entriesFor(owner, LocalDate.now()).getFirst();
-        assertThat(adjusted.getServingQuantity()).isEqualTo(150);
-        assertThat(adjusted.getCalories()).isEqualTo(225);
-        assertThat(diaryService.mealSummaries(List.of(adjusted)))
-                .first()
-                .satisfies(meal -> {
-                    assertThat(meal.mealType()).isEqualTo("breakfast");
-                    assertThat(meal.calories()).isEqualTo(225);
-                    assertThat(meal.protein()).isEqualTo(15);
-                });
+        assertThat(adjusted.getPortionCount()).isEqualTo(3);
+        assertThat(adjusted.getPortionCountLabel()).isEqualTo("3");
+        assertThat(adjusted.getServingQuantity()).isEqualTo(300);
+        assertThat(adjusted.getCalories()).isEqualTo(450);
+
+        diaryService.adjustPortions(owner, entry.getId(), -1);
+
+        FoodEntry decreased = diaryService.entriesFor(owner, LocalDate.now()).getFirst();
+        assertThat(decreased.getPortionCount()).isEqualTo(2);
+        assertThat(decreased.getServingQuantity()).isEqualTo(200);
+        assertThat(decreased.getCalories()).isEqualTo(300);
+
+        diaryService.adjustPortions(owner, entry.getId(), -1);
+        diaryService.adjustPortions(owner, entry.getId(), -1);
+
+        FoodEntry minimum = diaryService.entriesFor(owner, LocalDate.now()).getFirst();
+        assertThat(minimum.getPortionCount()).isEqualTo(1);
+        assertThat(minimum.getCalories()).isEqualTo(150);
     }
 
     private FoodEntryForm food(String name, double quantity, double calories) {

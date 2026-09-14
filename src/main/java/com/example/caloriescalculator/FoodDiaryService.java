@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,11 +38,11 @@ public class FoodDiaryService {
     }
 
     @Transactional
-    public void scale(AppUser user, Long entryId, double multiplier) {
-        if (multiplier != 0.5 && multiplier != 1.5) {
+    public void adjustPortions(AppUser user, Long entryId, double delta) {
+        if (delta != -1.0 && delta != 1.0) {
             throw new IllegalArgumentException("Unsupported portion adjustment");
         }
-        requireEntry(user, entryId).scaleBy(multiplier);
+        requireEntry(user, entryId).adjustPortions(delta);
     }
 
     public Set<String> recentFoodNames(AppUser user) {
@@ -53,35 +51,9 @@ public class FoodDiaryService {
                 .collect(java.util.stream.Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public List<MealSummary> mealSummaries(List<FoodEntry> entries) {
-        return List.of("breakfast", "lunch", "dinner", "snack").stream()
-                .map(meal -> {
-                    List<FoodEntry> matching = entries.stream().filter(entry -> meal.equals(entry.getMealType())).toList();
-                    return new MealSummary(meal,
-                            Math.round(matching.stream().mapToDouble(FoodEntry::getCalories).sum()),
-                            Math.round(matching.stream().mapToDouble(FoodEntry::getProteinGrams).sum()),
-                            Math.round(matching.stream().mapToDouble(FoodEntry::getCarbohydrateGrams).sum()),
-                            Math.round(matching.stream().mapToDouble(FoodEntry::getFatGrams).sum()));
-                }).toList();
-    }
-
-    public Map<String, List<FoodEntry>> entriesByMeal(List<FoodEntry> entries) {
-        return entries.stream().collect(Collectors.groupingBy(FoodEntry::getMealType));
-    }
-
     @Transactional
     public void delete(AppUser user, Long entryId) {
         foodEntryRepository.findByIdAndUser(entryId, user).ifPresent(foodEntryRepository::delete);
-    }
-
-    @Transactional
-    public int copyMeal(AppUser user, LocalDate sourceDate, LocalDate targetDate, String mealType) {
-        List<FoodEntry> sourceEntries = foodEntryRepository
-                .findByUserAndLogDateAndMealTypeOrderByCreatedAtAsc(user, sourceDate, mealType);
-        foodEntryRepository.saveAll(sourceEntries.stream()
-                .map(entry -> entry.copyFor(user, targetDate))
-                .toList());
-        return sourceEntries.size();
     }
 
     public DiarySummary summarize(AppUser user, LocalDate date, List<FoodEntry> entries) {

@@ -12,8 +12,6 @@
     <div class="alert success undo-alert" th:if="${param.saved}"><span th:text="${savedFoodName != null} ? #{diary.savedNamed(${savedFoodName})} : #{diary.saved}"></span><form th:if="${savedEntryId != null}" th:action="@{/diary/{id}/delete(id=${savedEntryId})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><button type="submit" th:text="#{diary.undo}"></button></form></div>
     <div class="alert success" th:if="${param.updated}" th:text="#{diary.updated}"></div>
     <div class="alert" th:if="${param.deleted}" th:text="#{diary.deleted}"></div>
-    <div class="alert success" th:if="${param.copied}" th:text="#{diary.copied}"></div>
-    <div class="alert" th:if="${param.nothingToCopy}" th:text="#{diary.nothingToCopy}"></div>
     <div class="alert success" th:if="${param.foodCreated}" th:text="#{diary.foodCreated}"></div>
     <div class="alert success" th:if="${param.foodUpdated}" th:text="#{diary.foodUpdated}"></div>
     <div class="alert" th:if="${param.foodDeleted}" th:text="#{diary.foodDeleted}"></div>
@@ -26,24 +24,6 @@
         <article><small th:text="#{diary.carbs}"></small><strong><span th:text="${summary.remainingCarbohydrate}"></span> g</strong><p><span th:text="${summary.consumedCarbohydrate}"></span> / <span th:text="${summary.carbohydrateTarget}"></span> g</p></article>
         <article><small th:text="#{diary.fat}"></small><strong><span th:text="${summary.remainingFat}"></span> g</strong><p><span th:text="${summary.consumedFat}"></span> / <span th:text="${summary.fatTarget}"></span> g</p></article>
     </section>
-    <section class="meal-overview">
-        <article th:each="meal : ${mealSummaries}">
-            <span class="meal-label" th:switch="${meal.mealType}"><i th:case="'breakfast'" th:text="#{meal.breakfast}"></i><i th:case="'lunch'" th:text="#{meal.lunch}"></i><i th:case="'dinner'" th:text="#{meal.dinner}"></i><i th:case="*" th:text="#{meal.snack}"></i></span>
-            <b><span th:text="${meal.calories}">0</span> kcal</b>
-            <small>P <span th:text="${meal.protein}">0</span> · C <span th:text="${meal.carbohydrate}">0</span> · F <span th:text="${meal.fat}">0</span> g</small>
-        </article>
-    </section>
-
-    <details class="card copy-meal-card collapsible-card">
-        <summary class="collapsible-summary"><span>↻</span><div><b th:text="#{diary.copyMeal}"></b><small th:text="#{diary.copyHelp}"></small></div></summary>
-        <form class="copy-meal-form" th:action="@{/diary/copy-meal}" method="post">
-            <input type="hidden" name="targetDate" th:value="${selectedDate}">
-            <label><span th:text="#{diary.sourceDate}"></span><input type="date" name="sourceDate" th:value="${selectedDate.minusDays(1)}" th:max="${selectedDate}" required></label>
-            <label><span th:text="#{diary.meal}"></span><select name="mealType"><option value="breakfast" th:text="#{meal.breakfast}"></option><option value="lunch" th:text="#{meal.lunch}"></option><option value="dinner" th:text="#{meal.dinner}"></option><option value="snack" th:text="#{meal.snack}"></option></select></label>
-            <button type="submit" th:text="#{diary.copySubmit}"></button>
-        </form>
-    </details>
-
     <section class="diary-layout">
         <form class="card food-form" th:action="${editingEntryId == null} ? @{/diary} : @{/diary/{id}(id=${editingEntryId})}" th:object="${foodEntry}" method="post">
             <div class="section-heading"><span th:text="${editingEntryId == null} ? '+' : '✎'">+</span><div>
@@ -52,7 +32,7 @@
                 <h2 th:if="${repeatingEntry != null}" th:text="#{diary.repeatTitle}"></h2>
                 <p th:text="#{diary.formHelp}"></p>
             </div></div>
-            <label><span th:text="#{diary.meal}"></span><select th:field="*{mealType}"><option value="breakfast" th:text="#{meal.breakfast}"></option><option value="lunch" th:text="#{meal.lunch}"></option><option value="dinner" th:text="#{meal.dinner}"></option><option value="snack" th:text="#{meal.snack}"></option></select><em th:errors="*{mealType}"></em></label>
+            <input type="hidden" th:field="*{mealType}">
             <div class="saved-food-picker">
                 <label for="saved-food-search" th:text="#{diary.savedFood}"></label>
                 <div class="food-combobox">
@@ -81,6 +61,7 @@
             <button id="manual-entry-toggle" class="manual-entry-toggle" type="button" th:if="${editingEntryId == null and repeatingEntry == null}" th:text="#{diary.enterManually}"></button>
             <input type="hidden" th:field="*{logDate}">
             <input type="hidden" th:field="*{servingDescription}"><input type="hidden" th:field="*{dataSource}"><input type="hidden" th:field="*{externalFoodId}">
+            <input type="hidden" th:field="*{portionCount}"><input type="hidden" th:field="*{baseServingQuantity}"><input type="hidden" th:field="*{baseServingLabel}">
             <div id="manual-food-fields" class="manual-food-fields" th:hidden="${editingEntryId == null and repeatingEntry == null and !#fields.hasAnyErrors()}">
                 <label class="full-field"><span th:text="#{diary.foodName}"></span><input type="text" th:field="*{foodName}"><em th:errors="*{foodName}"></em></label>
                 <div class="serving-row">
@@ -100,14 +81,11 @@
 
         <section class="card entries-card">
             <div class="section-heading"><span>✓</span><div><h2 th:text="#{diary.entries}"></h2><p th:text="${#temporals.format(selectedDate, 'dd/MM/yyyy')}"></p></div></div>
-            <div class="meal-entry-group" th:each="meal : ${mealSummaries}">
-                <div class="meal-entry-heading"><h3 th:switch="${meal.mealType}"><span th:case="'breakfast'" th:text="#{meal.breakfast}"></span><span th:case="'lunch'" th:text="#{meal.lunch}"></span><span th:case="'dinner'" th:text="#{meal.dinner}"></span><span th:case="*" th:text="#{meal.snack}"></span></h3><b><span th:text="${meal.calories}">0</span> kcal</b></div>
-                <div class="meal-empty" th:if="${entriesByMeal.get(meal.mealType) == null or entriesByMeal.get(meal.mealType).isEmpty()}"><span th:text="#{diary.noMealEntries}"></span><button class="add-to-meal" type="button" th:attr="data-meal=${meal.mealType}" th:text="#{diary.addFoodShort}"></button></div>
-                <div class="food-entry" th:each="entry : ${entriesByMeal.get(meal.mealType)}">
-                    <div class="food-entry-main"><span class="food-origin" th:classappend="${entry.dataSource}" th:text="${entry.dataSource == 'reference'} ? #{diary.sourceReference} : (${entry.dataSource == 'estimate'} ? #{diary.sourceEstimate} : (${entry.dataSource == 'custom'} ? #{diary.sourceMine} : #{diary.sourceManual}))"></span><h3 th:text="${entry.foodName}"></h3><small><span th:text="${#numbers.formatDecimal(entry.servingQuantity, 0, 2)}"></span> <span th:text="${entry.servingUnit == 'ml' ? #messages.msg('unit.ml') : #messages.msg('unit.gram')}"></span><span th:if="${entry.servingDescription != null}" th:text="${' · ' + entry.servingDescription}"></span></small></div>
-                    <div class="food-nutrients"><b><span th:text="${#numbers.formatDecimal(entry.calories, 0, 0)}"></span> kcal</b><small>P <span th:text="${#numbers.formatDecimal(entry.proteinGrams, 0, 1)}"></span> · C <span th:text="${#numbers.formatDecimal(entry.carbohydrateGrams, 0, 1)}"></span> · F <span th:text="${#numbers.formatDecimal(entry.fatGrams, 0, 1)}"></span></small></div>
-                    <div class="entry-actions"><form th:action="@{/diary/{id}/scale(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><input type="hidden" name="multiplier" value="0.5"><button class="portion-adjust" type="submit" th:aria-label="#{diary.lessPortion}">−</button></form><form th:action="@{/diary/{id}/scale(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><input type="hidden" name="multiplier" value="1.5"><button class="portion-adjust" type="submit" th:aria-label="#{diary.morePortion}">+</button></form><a class="secondary-button" th:href="@{/diary/{id}/repeat(id=${entry.id},date=${selectedDate})}" th:text="#{diary.repeat}"></a><a class="edit-button" th:href="@{/diary/{id}/edit(id=${entry.id})}" th:text="#{common.edit}"></a><form th:action="@{/diary/{id}/delete(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><button class="delete-button" type="submit" th:aria-label="#{common.delete}">×</button></form></div>
-                </div>
+            <p class="history-empty" th:if="${entries.isEmpty()}" th:text="#{diary.noEntries}"></p>
+            <div class="food-entry" th:each="entry : ${entries}">
+                <div class="food-entry-main"><span class="food-origin" th:classappend="${entry.dataSource}" th:text="${entry.dataSource == 'reference'} ? #{diary.sourceReference} : (${entry.dataSource == 'estimate'} ? #{diary.sourceEstimate} : (${entry.dataSource == 'custom'} ? #{diary.sourceMine} : #{diary.sourceManual}))"></span><div class="food-entry-title"><h3 th:text="${entry.foodName}"></h3><b class="portion-count" th:text="${'×' + entry.portionCountLabel}">×1</b></div><small><span th:text="${#numbers.formatDecimal(entry.servingQuantity, 0, 2)}"></span> <span th:text="${entry.servingUnit == 'ml' ? #messages.msg('unit.ml') : #messages.msg('unit.gram')}"></span><span th:if="${entry.baseServingLabel != null}" th:text="${' · ' + entry.baseServingLabel}"></span></small></div>
+                <div class="food-nutrients"><b><span th:text="${#numbers.formatDecimal(entry.calories, 0, 0)}"></span> kcal</b><small>P <span th:text="${#numbers.formatDecimal(entry.proteinGrams, 0, 1)}"></span> · C <span th:text="${#numbers.formatDecimal(entry.carbohydrateGrams, 0, 1)}"></span> · F <span th:text="${#numbers.formatDecimal(entry.fatGrams, 0, 1)}"></span></small></div>
+                <div class="entry-actions"><form th:action="@{/diary/{id}/scale(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><input type="hidden" name="delta" value="-1"><button class="portion-adjust" type="submit" th:disabled="${entry.portionCount <= 1}" th:aria-label="#{diary.lessPortion}">−</button></form><form th:action="@{/diary/{id}/scale(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><input type="hidden" name="delta" value="1"><button class="portion-adjust" type="submit" th:aria-label="#{diary.morePortion}">+</button></form><a class="secondary-button" th:href="@{/diary/{id}/repeat(id=${entry.id},date=${selectedDate})}" th:text="#{diary.repeat}"></a><a class="edit-button" th:href="@{/diary/{id}/edit(id=${entry.id})}" th:text="#{common.edit}"></a><form th:action="@{/diary/{id}/delete(id=${entry.id})}" method="post"><input type="hidden" name="date" th:value="${selectedDate}"><button class="delete-button" type="submit" th:aria-label="#{common.delete}">×</button></form></div>
             </div>
         </section>
         <form id="favorite-toggle-form" th:action="@{/foods/favorites/toggle}" method="post" hidden><input type="hidden" name="foodKey"><input type="hidden" name="date" th:value="${selectedDate}"></form>
@@ -243,6 +221,9 @@
         field('servingDescription').value = selectedFood.servingLabel;
         field('dataSource').value = option.dataset.sourceType;
         field('externalFoodId').value = option.dataset.foodKey;
+        field('portionCount').value = '1';
+        field('baseServingQuantity').value = selectedFood.servingSize;
+        field('baseServingLabel').value = selectedFood.servingLabel;
         portionMultiplier.value = '1';
         updateNutrition(selectedFood.servingSize / 100);
         savedFoodNote.textContent = isEnglish ? `Filled for ${selectedFood.servingLabel}. Change the amount to recalculate automatically.` : `ใส่ข้อมูลสำหรับ ${selectedFood.servingLabel} แล้ว เปลี่ยนจำนวนเพื่อคำนวณสารอาหารอัตโนมัติได้`;
@@ -276,6 +257,9 @@
         document.getElementById('selected-fat').textContent = round(selectedFood.fat * factor);
         field('servingQuantity').value = round(selectedFood.servingSize * Number(portionMultiplier.value));
         field('servingDescription').value = `${portionMultiplier.value} × ${selectedFood.servingLabel}`;
+        field('portionCount').value = portionMultiplier.value;
+        field('baseServingQuantity').value = selectedFood.servingSize;
+        field('baseServingLabel').value = selectedFood.servingLabel;
         updateNutrition(factor);
     }
     portionMultiplier.addEventListener('change', updateSelectedStats);
@@ -295,13 +279,11 @@
         field('dataSource').value = 'manual';
         field('externalFoodId').value = '';
         field('servingDescription').value = '';
+        field('portionCount').value = '';
+        field('baseServingQuantity').value = '';
+        field('baseServingLabel').value = '';
         field('foodName').focus();
     });
-    document.querySelectorAll('.add-to-meal').forEach(button => button.addEventListener('click', () => {
-        field('mealType').value = button.dataset.meal;
-        savedFoodSearch.focus();
-        savedFoodSearch.scrollIntoView({ behavior:'smooth', block:'center' });
-    }));
     favoriteFoodButton.addEventListener('click', async () => {
         if (!selectedFood) return;
         favoriteToggleForm.elements.foodKey.value = selectedFood.option.dataset.foodKey;
