@@ -47,7 +47,10 @@
             </div></div>
             <div class="saved-food-picker">
                 <label for="saved-food-search" th:text="#{diary.savedFood}"></label>
-                <input id="saved-food-search" type="search" th:placeholder="#{diary.searchPlaceholder}" autocomplete="off" th:disabled="${commonFoods.isEmpty() and customFoods.isEmpty()}">
+                <div class="food-combobox">
+                    <input id="saved-food-search" type="search" th:placeholder="#{diary.searchPlaceholder}" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="food-suggestions" aria-expanded="false" th:disabled="${commonFoods.isEmpty() and customFoods.isEmpty()}">
+                    <div id="food-suggestions" class="food-suggestions" role="listbox" hidden></div>
+                </div>
                 <select id="saved-food-select" th:disabled="${commonFoods.isEmpty() and customFoods.isEmpty()}">
                     <option value="" th:text="${commonFoods.isEmpty() and customFoods.isEmpty()} ? #{diary.noSavedFood} : #{diary.chooseSavedFood}"></option>
                     <optgroup th:unless="${commonFoods.isEmpty()}" th:label="#{diary.commonFoods}">
@@ -128,16 +131,68 @@
     const savedFoodSelect = document.getElementById('saved-food-select');
     const savedFoodSearch = document.getElementById('saved-food-search');
     const savedFoodNote = document.getElementById('saved-food-note');
+    const foodSuggestions = document.getElementById('food-suggestions');
     const originalOptions = Array.from(savedFoodSelect.options).slice(1);
     const field = name => document.querySelector(`[name="${name}"]`);
     let selectedFood = null;
+    let activeSuggestion = -1;
 
-    savedFoodSearch?.addEventListener('input', () => {
-        const query = savedFoodSearch.value.trim().toLocaleLowerCase();
-        savedFoodSelect.replaceChildren(savedFoodSelect.options[0], ...originalOptions.filter(option =>
-            `${option.dataset.name} ${option.dataset.brand}`.toLocaleLowerCase().includes(query)));
-        savedFoodSelect.value = '';
-        selectedFood = null;
+    const normalized = value => value.toLocaleLowerCase().replace(/\s+/g, ' ').trim();
+    const matchScore = (option, query) => {
+        const name = normalized(option.dataset.name || '');
+        const extra = normalized(option.dataset.brand || '');
+        if (name.startsWith(query)) return 0;
+        if (name.split(' ').some(word => word.startsWith(query))) return 1;
+        if (name.includes(query)) return 2;
+        if (extra.includes(query)) return 3;
+        return 99;
+    };
+    const closeSuggestions = () => {
+        foodSuggestions.hidden = true;
+        foodSuggestions.replaceChildren();
+        savedFoodSearch.setAttribute('aria-expanded', 'false');
+        activeSuggestion = -1;
+    };
+    const chooseFood = option => {
+        savedFoodSelect.value = option.value;
+        savedFoodSelect.dispatchEvent(new Event('change'));
+        savedFoodSearch.value = option.dataset.name;
+        closeSuggestions();
+    };
+    const showSuggestions = () => {
+        const query = normalized(savedFoodSearch.value);
+        if (!query) { closeSuggestions(); return; }
+        const matches = originalOptions
+            .map((option, order) => ({ option, order, score:matchScore(option, query) }))
+            .filter(match => match.score < 99)
+            .sort((a, b) => a.score - b.score || a.order - b.order)
+            .slice(0, 8);
+        foodSuggestions.replaceChildren(...matches.map(({ option }) => {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'food-suggestion';
+            item.setAttribute('role', 'option');
+            item.innerHTML = `<span>${escapeHtml(option.dataset.name)}</span><small>${escapeHtml(option.dataset.brand || '')} · ${round(Number(option.dataset.calories))} kcal/100 ${option.dataset.unit === 'ml' ? 'ml' : 'g'}</small>`;
+            item.addEventListener('mousedown', event => { event.preventDefault(); chooseFood(option); });
+            return item;
+        }));
+        const hasMatches = matches.length > 0;
+        foodSuggestions.hidden = !hasMatches;
+        savedFoodSearch.setAttribute('aria-expanded', String(hasMatches));
+        activeSuggestion = -1;
+    };
+    savedFoodSearch?.addEventListener('input', () => { selectedFood = null; savedFoodSelect.value = ''; showSuggestions(); });
+    savedFoodSearch?.addEventListener('focus', showSuggestions);
+    savedFoodSearch?.addEventListener('blur', () => setTimeout(closeSuggestions, 100));
+    savedFoodSearch?.addEventListener('keydown', event => {
+        const items = Array.from(foodSuggestions.querySelectorAll('.food-suggestion'));
+        if (event.key === 'Escape') { closeSuggestions(); return; }
+        if (!items.length || !['ArrowDown','ArrowUp','Enter'].includes(event.key)) return;
+        event.preventDefault();
+        if (event.key === 'Enter') { items[Math.max(0, activeSuggestion)].dispatchEvent(new MouseEvent('mousedown')); return; }
+        activeSuggestion = event.key === 'ArrowUp' ? Math.max(0, activeSuggestion - 1) : Math.min(items.length - 1, activeSuggestion + 1);
+        items.forEach((item, index) => item.classList.toggle('active', index === activeSuggestion));
+        items[activeSuggestion]?.scrollIntoView({ block:'nearest' });
     });
     savedFoodSelect.addEventListener('change', () => {
         const option = savedFoodSelect.selectedOptions[0];
@@ -159,6 +214,7 @@
     function updateFromQuantity() { if (selectedFood && field('servingUnit').value === selectedFood.unit) updateNutrition((Number(field('servingQuantity').value) || 0) / 100); }
     function updateNutrition(factor) { field('calories').value=round(selectedFood.calories*factor); field('proteinGrams').value=round(selectedFood.protein*factor); field('carbohydrateGrams').value=round(selectedFood.carbs*factor); field('fatGrams').value=round(selectedFood.fat*factor); }
     function round(value) { return Math.round(value * 10) / 10; }
+    function escapeHtml(value) { const element=document.createElement('span'); element.textContent=value; return element.innerHTML; }
 
     const customFoodSearch = document.getElementById('custom-food-search');
     customFoodSearch?.addEventListener('input', () => {
