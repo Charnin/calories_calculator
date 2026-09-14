@@ -254,6 +254,29 @@ body { background:radial-gradient(circle at 8% 3%,#ffe0c2 0,transparent 30%),lin
 .food-suggestion>span i { color:#e49225; font-style:normal; }
 .food-suggestion small:nth-child(2) { display:flex; align-items:center; justify-content:flex-end; gap:6px; }
 .entry-actions .portion-adjust { display:grid; width:30px; height:30px; margin:0; padding:0; place-items:center; border:1px solid var(--line); border-radius:9px; background:#fff5ec; color:var(--green); font-size:17px; box-shadow:none; }
+.js #saved-food-select { display:none; }
+.manual-entry-toggle { width:100%; margin:10px 0 0; padding:11px; border:1px dashed #e4b997; background:transparent; color:var(--green); box-shadow:none; font-size:13px; }
+.manual-entry-toggle:hover { background:#fff1e5; color:var(--green); }
+.undo-alert { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.undo-alert form { margin:0; }
+.undo-alert button { width:auto; min-height:36px; margin:0; padding:7px 12px; background:transparent; color:var(--green); text-decoration:underline; }
+.collapsible-card { padding:0!important; overflow:hidden; }
+.collapsible-summary { display:flex; padding:19px 24px; align-items:center; gap:13px; color:var(--ink); list-style:none; }
+.collapsible-summary::-webkit-details-marker { display:none; }
+.collapsible-summary::after { margin-left:auto; color:var(--green); content:"＋"; font-size:20px; }
+.collapsible-card[open]>.collapsible-summary::after { content:"−"; }
+.collapsible-summary>span { display:grid; width:31px; height:31px; flex:0 0 auto; place-items:center; border-radius:50%; background:#fff1e5; color:var(--green); font-weight:700; }
+.collapsible-summary b,.collapsible-summary small { display:block; }
+.collapsible-summary small { margin-top:2px; color:var(--muted); font-weight:400; }
+.collapsible-card>.copy-meal-form,.collapsible-card>.custom-food-layout { margin:0; padding:0 24px 24px; }
+.meal-entry-group { padding:17px 0 5px; border-top:1px solid var(--line); }
+.meal-entry-group:first-of-type { border-top:0; }
+.meal-entry-heading { display:flex; align-items:center; justify-content:space-between; margin-bottom:7px; }
+.meal-entry-heading h3 { margin:0; font-size:16px; }
+.meal-entry-heading>b { color:var(--green); font-size:13px; }
+.meal-empty { display:flex; min-height:54px; align-items:center; justify-content:space-between; gap:12px; color:var(--muted); font-size:13px; }
+.add-to-meal { width:auto; min-height:40px; margin:0; padding:8px 12px; border:1px solid var(--line); background:#fff8f2; color:var(--green); box-shadow:none; font-size:12px; }
+.add-to-meal:hover { background:#fff1e5; color:var(--green); }
 
 @media (max-width:800px) {
     .top-nav { display:grid; grid-template-columns:1fr auto; gap:16px; }
@@ -283,6 +306,12 @@ body { background:radial-gradient(circle at 8% 3%,#ffe0c2 0,transparent 30%),lin
     .portion-picker small { grid-column:1; }
     .food-suggestion { grid-template-columns:1fr; }
     .food-suggestion small,.food-suggestion small:last-child { grid-column:1; justify-content:flex-start; text-align:left; }
+    button,.nav-link,.secondary-button,.edit-button,input,select { min-height:44px; }
+    .collapsible-summary { padding:16px 18px; }
+    .collapsible-card>.copy-meal-form,.collapsible-card>.custom-food-layout { padding:0 18px 18px; }
+    .food-entry { gap:10px; }
+    .entry-actions { gap:7px; }
+    .entry-actions .portion-adjust,.delete-button { width:44px; height:44px; }
 }
 .secondary-button { display:inline-block; padding:7px 10px; border:1px solid var(--line); border-radius:9px; color:var(--green); font-size:13px; font-weight:700; text-decoration:none; }
 .secondary-button:hover { border-color:var(--green); }

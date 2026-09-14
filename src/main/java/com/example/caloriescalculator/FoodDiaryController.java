@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class FoodDiaryController {
@@ -45,14 +46,17 @@ public class FoodDiaryController {
 
     @PostMapping("/diary")
     public String addFood(@Valid @ModelAttribute("foodEntry") FoodEntryForm foodEntry,
-                          BindingResult bindingResult, Model model, Principal principal) {
+                          BindingResult bindingResult, Model model, Principal principal,
+                          RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             addDiaryModel(model, principal,
                     foodEntry.getLogDate() == null ? LocalDate.now() : foodEntry.getLogDate());
             return "diary";
         }
         AppUser user = accountService.requireByEmail(principal.getName());
-        diaryService.add(user, foodEntry);
+        FoodEntry savedEntry = diaryService.add(user, foodEntry);
+        redirectAttributes.addFlashAttribute("savedFoodName", savedEntry.getFoodName());
+        redirectAttributes.addFlashAttribute("savedEntryId", savedEntry.getId());
         return "redirect:/diary?date=" + foodEntry.getLogDate() + "&saved";
     }
 
@@ -138,6 +142,7 @@ public class FoodDiaryController {
         model.addAttribute("entries", entries);
         model.addAttribute("summary", diaryService.summarize(user, date, entries));
         model.addAttribute("mealSummaries", diaryService.mealSummaries(entries));
+        model.addAttribute("entriesByMeal", diaryService.entriesByMeal(entries));
         model.addAttribute("recentFoodNames", diaryService.recentFoodNames(user));
         model.addAttribute("favoriteFoodKeys", favoriteFoodService.keysFor(user));
         model.addAttribute("customFoods", customFoodService.list(user));

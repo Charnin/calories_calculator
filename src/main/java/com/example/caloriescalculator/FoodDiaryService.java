@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +25,8 @@ public class FoodDiaryService {
     }
 
     @Transactional
-    public void add(AppUser user, FoodEntryForm form) {
-        foodEntryRepository.save(new FoodEntry(user, form));
+    public FoodEntry add(AppUser user, FoodEntryForm form) {
+        return foodEntryRepository.save(new FoodEntry(user, form));
     }
 
     public FoodEntry requireEntry(AppUser user, Long entryId) {
@@ -61,6 +63,10 @@ public class FoodDiaryService {
                             Math.round(matching.stream().mapToDouble(FoodEntry::getCarbohydrateGrams).sum()),
                             Math.round(matching.stream().mapToDouble(FoodEntry::getFatGrams).sum()));
                 }).toList();
+    }
+
+    public Map<String, List<FoodEntry>> entriesByMeal(List<FoodEntry> entries) {
+        return entries.stream().collect(Collectors.groupingBy(FoodEntry::getMealType));
     }
 
     @Transactional
