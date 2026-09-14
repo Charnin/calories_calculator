@@ -1,0 +1,51 @@
+# Nutrients are per 100 g edible portion. Parenthesized calculated values in the source are stored as numbers.
+# Source: The Concise ASEAN Food Composition Tables (2014), ASEANFOODS Regional Centre, Institute of Nutrition, Mahidol University.
+foodCode;nameTh;nameEn;category;baseUnit;caloriesPer100;proteinPer100;carbohydratePer100;fatPer100;sourceName;sourceUrl
+THT68;โจ๊กหมู;Rice porridge with minced pork;อาหารจานเดียว;g;57;1.6;6.9;2.6;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT50;ข้าวต้ม;Plain rice porridge;อาหารจานเดียว;g;59;4.1;8.9;0.8;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT65;ข้าวหมูทอด;Rice with seasoned fried pork;อาหารจานเดียว;g;144;7.7;21.1;3.2;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT51;ข้าวต้มหมู;Rice porridge with pork;อาหารจานเดียว;g;65;4.2;9.4;1.2;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT48;ข้าวขาหมู;Rice with pork leg and gravy;อาหารจานเดียว;g;161;7.2;19.3;5.9;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT54;ข้าวราดไก่ผัดกะเพรา;Rice with chicken and holy basil;อาหารจานเดียว;g;188;8.6;23.6;6.6;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT56;ข้าวผัดหมูใส่ไข่;Pork and egg fried rice;อาหารจานเดียว;g;151;5.9;16.7;6.7;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT44;ข้าวราดไข่พะโล้;Rice with five-spice egg;อาหารจานเดียว;g;181;5.7;25.2;6.4;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT39;ขนมจีนน้ำยา;Rice noodles with fermented fish curry;อาหารจานเดียว;g;82;2.7;13.0;2.1;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT123;เส้นใหญ่ลูกชิ้นเนื้อ น้ำ;Wide rice noodles with beef balls in soup;ก๋วยเตี๋ยว;g;61;4.6;9.0;0.7;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT127;เส้นใหญ่หมู น้ำ;Wide rice noodles with pork in soup;ก๋วยเตี๋ยว;g;75;7.1;2.8;3.6;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT122;เส้นหมี่ลูกชิ้นเนื้อ น้ำ;Rice vermicelli with beef balls in soup;ก๋วยเตี๋ยว;g;49;3.2;5.8;1.3;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT121;เส้นหมี่ลูกชิ้นเนื้อ แห้ง;Dry rice vermicelli with beef balls;ก๋วยเตี๋ยว;g;152;5.9;21.7;4.6;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT111;เส้นเล็กหมู แห้ง;Dry small rice noodles with pork;ก๋วยเตี๋ยว;g;209;7.9;21.0;10.4;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT103;ส้มตำอีสาน;Isan-style green papaya salad;กับข้าว;g;28;1.8;4.5;0.3;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT31;พะแนงหอยลาย;Baby clam panang curry;กับข้าว;g;126;7.2;3.4;9.0;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT134;หอยลายผัดพริก;Baby clams fried with chilli;กับข้าว;g;384;19.8;25.7;21.4;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT73;ซุปหน่อไม้;Northeastern-style bamboo shoot salad;กับข้าว;g;33;2.8;4.4;0.5;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THH4;ไข่เจียว;Thai omelet;ไข่;g;259;7.0;3.1;24.3;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THH6;ไข่ตุ๋น;Steamed egg;ไข่;g;75;4.9;3.1;4.8;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THH18;ไข่ไก่ต้ม;Boiled hen egg;ไข่;g;152;13.4;1.2;10.4;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THG95;ปลาทูทอด;Fried short-bodied mackerel;เนื้อสัตว์;g;236;28.0;0.3;13.6;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THG94;ปลาทูต้ม;Boiled short-bodied mackerel;เนื้อสัตว์;g;145;23.4;0.2;5.6;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THF97;คอหมูย่าง;Broiled pork shoulder;เนื้อสัตว์;g;284;35.9;3.6;14.0;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THF88;หมูสันในดิบ;Raw pork tenderloin;วัตถุดิบ;g;116;21.8;0.0;3.2;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+AAF99;อกไก่ติดหนังดิบ;Raw chicken breast with skin;วัตถุดิบ;g;152;19.9;0.0;8.0;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THC48;เต้าหู้ขาวแข็ง;Firm white soybean curd;วัตถุดิบ;g;118;12.4;3.7;5.9;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THD34;แตงกวา;Small cucumber;ผัก;g;21;0.8;3.7;0.1;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THD118;มะเขือเทศ;Raw tomato;ผัก;g;23;1.0;3.4;0.3;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THD119;มะเขือเทศสีดา;Small cherry tomato;ผัก;g;23;1.0;3.3;0.3;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THD50;บรอกโคลีดิบ;Raw broccoli;ผัก;g;26;3.4;1.4;0.1;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THD65;ผักกวางตุ้ง;Flowering white cabbage;ผัก;g;20;1.9;1.5;0.2;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THE3;กล้วยน้ำว้าสุก;Ripe apple banana;ผลไม้;g;100;1.0;22.4;0.2;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THE8;กล้วยหอมทองสุก;Ripe Cavendish banana;ผลไม้;g;94;1.3;19.9;0.6;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THE82;มะละกอสุก;Ripe papaya;ผลไม้;g;40;0.9;8.1;0.1;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+AAE126;แตงโม;Watermelon;ผลไม้;g;24;0.6;5.1;0.1;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+AAE91;สับปะรด;Pineapple;ผลไม้;g;48;0.5;10.8;0.1;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+AAE41;ฝรั่งเนื้อขาว;White-flesh guava;ผลไม้;g;55;0.9;10.1;0.2;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THE75;มะม่วงอกร่องสุก;Ripe Okrong mango;ผลไม้;g;79;0.8;17.9;0.2;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THE115;ส้มเขียวหวาน;Mandarin;ผลไม้;g;42;1.0;8.1;0.3;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THQ27;น้ำส้ม 100%;100% orange juice;เครื่องดื่ม;ml;56;0.6;13.1;0.1;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+AAQ57;นมถั่วเหลือง;Soybean milk;เครื่องดื่ม;ml;53;2.3;6.7;1.9;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+AAJ12;นมวัวสด;Fresh cow milk;เครื่องดื่ม;ml;68;3.5;4.2;4.1;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT137;ขนมหม้อแกงไข่;Baked egg custard;ขนม;g;197;6.3;24.1;7.8;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT138;ขนมหม้อแกงถั่ว;Baked mung bean custard;ขนม;g;207;5.8;27.7;7.2;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT139;ข้าวเหนียวมูน;Glutinous rice with coconut milk;ขนม;g;281;3.1;52.2;6.3;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT144;บัวลอยเผือก;Taro balls in coconut milk;ขนม;g;150;0.8;26.5;4.1;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf
+THT145;เผือกแกงบวด;Taro in coconut milk;ขนม;g;133;1.0;21.6;4.5;ASEAN Food Composition Tables 2014;https://inmu.mahidol.ac.th/aseanfoods/doc/OnlineASEAN_FCD_V1_2014.pdf

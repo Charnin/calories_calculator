@@ -47,10 +47,15 @@
             </div></div>
             <div class="saved-food-picker">
                 <label for="saved-food-search" th:text="#{diary.savedFood}"></label>
-                <input id="saved-food-search" type="search" th:placeholder="#{diary.searchPlaceholder}" autocomplete="off" th:disabled="${customFoods.isEmpty()}">
-                <select id="saved-food-select" th:disabled="${customFoods.isEmpty()}">
-                    <option value="" th:text="${customFoods.isEmpty()} ? #{diary.noSavedFood} : #{diary.chooseSavedFood}"></option>
-                    <option th:each="food : ${customFoods}" th:value="${food.id}" th:text="${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)}" th:attr="data-name=${food.name},data-brand=${food.brand},data-unit=${food.baseUnit},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
+                <input id="saved-food-search" type="search" th:placeholder="#{diary.searchPlaceholder}" autocomplete="off" th:disabled="${commonFoods.isEmpty() and customFoods.isEmpty()}">
+                <select id="saved-food-select" th:disabled="${commonFoods.isEmpty() and customFoods.isEmpty()}">
+                    <option value="" th:text="${commonFoods.isEmpty() and customFoods.isEmpty()} ? #{diary.noSavedFood} : #{diary.chooseSavedFood}"></option>
+                    <optgroup th:unless="${commonFoods.isEmpty()}" th:label="#{diary.commonFoods}">
+                        <option th:each="food : ${commonFoods}" th:value="${'common-' + food.id}" th:text="${#locale.language == 'en' ? food.nameEn : food.nameTh}" th:attr="data-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-entry-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-brand=${food.category},data-unit=${food.baseUnit},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
+                    </optgroup>
+                    <optgroup th:unless="${customFoods.isEmpty()}" th:label="#{diary.myFoods}">
+                        <option th:each="food : ${customFoods}" th:value="${'custom-' + food.id}" th:text="${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)}" th:attr="data-name=${food.name},data-entry-name=${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)},data-brand=${food.brand},data-unit=${food.baseUnit},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
+                    </optgroup>
                 </select>
                 <p id="saved-food-note" th:text="#{diary.savedFoodNote}"></p>
             </div>
@@ -138,7 +143,7 @@
         const option = savedFoodSelect.selectedOptions[0];
         if (!option?.value) { selectedFood = null; return; }
         selectedFood = { unit:option.dataset.unit, calories:Number(option.dataset.calories), protein:Number(option.dataset.protein), carbs:Number(option.dataset.carbs), fat:Number(option.dataset.fat) };
-        field('foodName').value = option.dataset.name + (option.dataset.brand ? ` — ${option.dataset.brand}` : '');
+        field('foodName').value = option.dataset.entryName;
         field('servingQuantity').value = 100;
         field('servingUnit').value = selectedFood.unit;
         updateNutrition(1);

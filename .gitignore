@@ -3,6 +3,8 @@ HELP.md
 .gradle-verification/
 build/
 data/
+!src/main/resources/data/
+!src/main/resources/data/**
 .env
 .env.*
 *.log

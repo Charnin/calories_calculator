@@ -19,12 +19,14 @@ public class FoodDiaryController {
     private final UserAccountService accountService;
     private final FoodDiaryService diaryService;
     private final CustomFoodService customFoodService;
+    private final CommonFoodCatalog commonFoodCatalog;
 
     public FoodDiaryController(UserAccountService accountService, FoodDiaryService diaryService,
-                               CustomFoodService customFoodService) {
+                               CustomFoodService customFoodService, CommonFoodCatalog commonFoodCatalog) {
         this.accountService = accountService;
         this.diaryService = diaryService;
         this.customFoodService = customFoodService;
+        this.commonFoodCatalog = commonFoodCatalog;
     }
 
     @GetMapping("/diary")
@@ -115,6 +117,7 @@ public class FoodDiaryController {
         model.addAttribute("entries", entries);
         model.addAttribute("summary", diaryService.summarize(user, date, entries));
         model.addAttribute("customFoods", customFoodService.list(user));
+        model.addAttribute("commonFoods", commonFoodCatalog.list());
         if (!model.containsAttribute("customFood")) {
             model.addAttribute("customFood", new CustomFoodForm());
         }
