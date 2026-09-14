@@ -54,10 +54,10 @@
                 <select id="saved-food-select" th:disabled="${commonFoods.isEmpty() and customFoods.isEmpty()}">
                     <option value="" th:text="${commonFoods.isEmpty() and customFoods.isEmpty()} ? #{diary.noSavedFood} : #{diary.chooseSavedFood}"></option>
                     <optgroup th:unless="${commonFoods.isEmpty()}" th:label="#{diary.commonFoods}">
-                        <option th:each="food : ${commonFoods}" th:value="${'common-' + food.id}" th:text="${#locale.language == 'en' ? food.nameEn : food.nameTh}" th:attr="data-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-entry-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-brand=${food.category},data-unit=${food.baseUnit},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
+                        <option th:each="food : ${commonFoods}" th:value="${'common-' + food.id}" th:text="${#locale.language == 'en' ? food.nameEn : food.nameTh}" th:attr="data-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-entry-name=${#locale.language == 'en' ? food.nameEn : food.nameTh},data-brand=${food.category},data-unit=${food.baseUnit},data-serving-size=${food.servingSize},data-serving-label=${#locale.language == 'en' ? food.servingLabelEn : food.servingLabelTh},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
                     </optgroup>
                     <optgroup th:unless="${customFoods.isEmpty()}" th:label="#{diary.myFoods}">
-                        <option th:each="food : ${customFoods}" th:value="${'custom-' + food.id}" th:text="${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)}" th:attr="data-name=${food.name},data-entry-name=${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)},data-brand=${food.brand},data-unit=${food.baseUnit},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
+                        <option th:each="food : ${customFoods}" th:value="${'custom-' + food.id}" th:text="${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)}" th:attr="data-name=${food.name},data-entry-name=${food.name + (food.brand.isBlank() ? '' : ' — ' + food.brand)},data-brand=${food.brand},data-unit=${food.baseUnit},data-serving-size=100,data-serving-label=${food.baseUnit == 'ml' ? '100 ml' : '100 g'},data-calories=${food.caloriesPer100},data-protein=${food.proteinPer100},data-carbs=${food.carbohydratePer100},data-fat=${food.fatPer100}"></option>
                     </optgroup>
                 </select>
                 <p id="saved-food-note" th:text="#{diary.savedFoodNote}"></p>
@@ -172,7 +172,8 @@
             item.type = 'button';
             item.className = 'food-suggestion';
             item.setAttribute('role', 'option');
-            item.innerHTML = `<span>${escapeHtml(option.dataset.name)}</span><small>${escapeHtml(option.dataset.brand || '')} · ${round(Number(option.dataset.calories))} kcal/100 ${option.dataset.unit === 'ml' ? 'ml' : 'g'}</small>`;
+            const factor = Number(option.dataset.servingSize || 100) / 100;
+            item.innerHTML = `<span>${escapeHtml(option.dataset.name)}</span><small>${escapeHtml(option.dataset.servingLabel)} · ${round(Number(option.dataset.calories) * factor)} kcal</small><small>P ${round(Number(option.dataset.protein) * factor)} · C ${round(Number(option.dataset.carbs) * factor)} · F ${round(Number(option.dataset.fat) * factor)} g</small>`;
             item.addEventListener('mousedown', event => { event.preventDefault(); chooseFood(option); });
             return item;
         }));
@@ -197,13 +198,12 @@
     savedFoodSelect.addEventListener('change', () => {
         const option = savedFoodSelect.selectedOptions[0];
         if (!option?.value) { selectedFood = null; return; }
-        selectedFood = { unit:option.dataset.unit, calories:Number(option.dataset.calories), protein:Number(option.dataset.protein), carbs:Number(option.dataset.carbs), fat:Number(option.dataset.fat) };
+        selectedFood = { unit:option.dataset.unit, servingSize:Number(option.dataset.servingSize || 100), servingLabel:option.dataset.servingLabel, calories:Number(option.dataset.calories), protein:Number(option.dataset.protein), carbs:Number(option.dataset.carbs), fat:Number(option.dataset.fat) };
         field('foodName').value = option.dataset.entryName;
-        field('servingQuantity').value = 100;
+        field('servingQuantity').value = selectedFood.servingSize;
         field('servingUnit').value = selectedFood.unit;
-        updateNutrition(1);
-        const unitLabel = selectedFood.unit === 'ml' ? (isEnglish ? 'milliliters' : 'มิลลิลิตร') : (isEnglish ? 'grams' : 'กรัม');
-        savedFoodNote.textContent = isEnglish ? `Nutrition per 100 ${unitLabel} has been filled. Change the amount to recalculate automatically.` : `นำข้อมูลต่อ 100 ${unitLabel} มาใส่แล้ว เปลี่ยนจำนวนเพื่อคำนวณสารอาหารอัตโนมัติได้`;
+        updateNutrition(selectedFood.servingSize / 100);
+        savedFoodNote.textContent = isEnglish ? `Filled for ${selectedFood.servingLabel}. Change the amount to recalculate automatically.` : `ใส่ข้อมูลสำหรับ ${selectedFood.servingLabel} แล้ว เปลี่ยนจำนวนเพื่อคำนวณสารอาหารอัตโนมัติได้`;
     });
     field('servingQuantity').addEventListener('input', updateFromQuantity);
     field('servingUnit').addEventListener('change', () => {

@@ -22,6 +22,8 @@ class CommonFoodCatalogTest {
                     assertThat(food.getProteinPer100()).isEqualTo(8.6);
                     assertThat(food.getCarbohydratePer100()).isEqualTo(23.6);
                     assertThat(food.getFatPer100()).isEqualTo(6.6);
+                    assertThat(food.getServingSize()).isEqualTo(300.0);
+                    assertThat(food.getServingLabelTh()).isEqualTo("1 จาน");
                 });
     }
 }
